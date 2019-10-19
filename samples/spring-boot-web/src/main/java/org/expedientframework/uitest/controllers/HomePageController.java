@@ -9,7 +9,7 @@
  *
  *******************************************************************/
 
-package org.expedientframework.facile.uitest.controllers;
+package org.expedientframework.uitest.controllers;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
