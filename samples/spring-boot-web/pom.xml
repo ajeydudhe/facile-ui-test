@@ -19,6 +19,7 @@
     <testng.version>7.0.0</testng.version>
     <webdrivermanager.version>3.7.1</webdrivermanager.version>
     <assertj.version>3.11.1</assertj.version>
+    <facile-mock-http-proxy.version>1.0.0-M1</facile-mock-http-proxy.version>
   </properties>
 
   <dependencies>
@@ -72,6 +73,13 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.expedientframework.facilemock</groupId>
+      <artifactId>facile-mock-http-proxy</artifactId>
+      <version>${facile-mock-http-proxy.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
