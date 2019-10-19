@@ -16,6 +16,9 @@
 
   <properties>
     <java.version>1.8</java.version>
+    <testng.version>7.0.0</testng.version>
+    <webdrivermanager.version>3.7.1</webdrivermanager.version>
+    <assertj.version>3.11.1</assertj.version>
   </properties>
 
   <dependencies>
@@ -48,10 +51,24 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>7.0.0</version>
+      <version>${testng.version}</version>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.bonigarcia</groupId>
+      <artifactId>webdrivermanager</artifactId>
+      <version>${webdrivermanager.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
