@@ -6,4 +6,8 @@
   <packaging>pom</packaging>
   <name>Facile UI test</name>
   <description>Simple project for UI testing.</description>
+  
+  <modules>
+    <module>samples</module>
+  </modules>
 </project>
