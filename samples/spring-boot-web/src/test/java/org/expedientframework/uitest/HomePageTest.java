@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.expedientframework.facilemock.http.browsermob.HttpMockContext;
 import org.expedientframework.facilemock.http.browsermob.HttpProxyManagerFactory;
 import org.expedientframework.uitest.pages.HomePage;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -28,6 +29,11 @@ public class HomePageTest {
       
       chromeOptions.setHeadless(true);
       
+      final String proxyAddress = "localhost:" + mock.getHttpProxyManager().getPort();
+      final Proxy proxy = new Proxy().setHttpProxy(proxyAddress).setSslProxy(proxyAddress);   
+      
+      chromeOptions.setProxy(proxy);
+      //chromeOptions.addArguments("--proxy-server=" + proxyAddress);
       this.webDriver = new ChromeDriver(chromeOptions);
       
       mock.when(urlEquals("/")).then(respondWith("<html>\n" + 
@@ -42,7 +48,12 @@ public class HomePageTest {
           "  </body>\n" + 
           "</html>"));
 
-      this.webDriver.get(String.format("http://localhost:%d", mock.getHttpProxyManager().getPort()));
+      // Observation: For localhost address needs to use the proxy port. For DNS name no need to use the proxy port.
+      // The proxy setting above takes care of it. So if we have a locahost server which needs to be proxied the consumer will
+      // have to use the proxy port in address. We will need a way to forward the request to local server if the request is not to be mocked.
+      final int port = 8080; // mock.getHttpProxyManager().getPort()
+      final String url = String.format("http://localhost:%d", port);
+      this.webDriver.get("http://blahblah.does.not.exists.com:1234");
       
       final HomePage homePage = PageFactory.initElements(this.webDriver, HomePage.class);
       
