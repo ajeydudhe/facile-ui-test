@@ -12,14 +12,17 @@
   <properties>
     <!-- Plugins -->
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-    
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-  
+
     <org.springframework.version>5.2.0.RELEASE</org.springframework.version>
     <mockito.version>3.1.0</mockito.version>
     <slf4j.version>1.7.28</slf4j.version>
+
+    <browsermob-core.version>2.1.5</browsermob-core.version>
+    <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
   </properties>
 
   <dependencies>
@@ -40,6 +43,26 @@
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${org.springframework.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.lightbody.bmp</groupId>
+      <artifactId>browsermob-core</artifactId>
+      <version>${browsermob-core.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>${javax.servlet-api.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
   <build>

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.expedientframework.facilemock.http.browsermob.HttpMockContext;
 import org.expedientframework.facilemock.http.browsermob.HttpProxyManagerFactory;
 import org.expedientframework.uitest.controllers.HelloWorldController;
+import org.expedientframework.uitest.core.UiTestContext;
 import org.expedientframework.uitest.pages.HomePage;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
@@ -123,7 +124,35 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
     }    
   }
 
+  @Test
+  public void helloWorld_usingUiTestContext_succeeds() throws Exception {
+    
+    try (UiTestContext uiTestContext = new UiTestContext(this.mockMvc)) {
+
+      assertThat(helloWorldController).as("helloWorldController").isNotNull();
+      
+      // Using Mockitto we mock the response at the controller class level
+      when(helloWorldController.greet()).thenReturn("My mocked hello world blah blah blah !!!");
+      
+      // Perform request using MockMvc  
+      assertThat(this.mockMvc).as("MockMvc").isNotNull();
+      
+      // Hook into http  request
+      createWebDriver(uiTestContext.getProxyPort());
+      
+      this.webDriver.get("http://blahblah.does.not.exists.com:1234/hello/greet");
+
+      // Finally checking the response is mocked one
+      assertThat(this.webDriver.getPageSource()).as("Hello message").isEqualTo("<html><head></head><body>My mocked hello world blah blah blah !!!</body></html>");    
+    }    
+  }
+  
   private void createWebDriver(final HttpMockContext mock) {
+    
+    createWebDriver(mock.getHttpProxyManager().getPort());
+  }
+    
+  private void createWebDriver(final int proxyPort) {
     
     if(this.webDriver != null) {
      
@@ -134,7 +163,7 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
     
     chromeOptions.setHeadless(true);
     
-    final String proxyAddress = "localhost:" + mock.getHttpProxyManager().getPort();
+    final String proxyAddress = "localhost:" + proxyPort;
     final Proxy proxy = new Proxy().setHttpProxy(proxyAddress).setSslProxy(proxyAddress);   
     
     chromeOptions.setProxy(proxy);
