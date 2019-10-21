@@ -73,15 +73,39 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
   }
   
   @Test
-  public void mockMvc_isNotNull() throws Exception {
+  public void applicationName_usingMockMvc_validName() throws Exception {
     
-    assertThat(this.mockMvc).as("MockMvc").isNotNull();
-    
-    final MvcResult result = this.mockMvc.perform(get("/"))
-                                 .andDo(print())
-                                 .andExpect(status().isOk()).andReturn();
-    
-    assertThat(result.getResponse().getContentAsString()).as("Response").contains("Facile UI Test Web Application");
+    try (HttpMockContext mock = HttpProxyManagerFactory.createMockContext(unitTest())) {
+
+      // Perform request using MopckMvc  
+      assertThat(this.mockMvc).as("MockMvc").isNotNull();
+      
+      final MvcResult result = this.mockMvc.perform(get("/"))
+                                   .andDo(print())
+                                   .andExpect(status().isOk()).andReturn();
+      
+      assertThat(result.getResponse().getContentAsString()).as("Response").contains("Facile UI Test Web Application");
+      
+      // Hook into http  request
+      final ChromeOptions chromeOptions = new ChromeOptions();
+      
+      chromeOptions.setHeadless(true);
+      
+      final String proxyAddress = "localhost:" + mock.getHttpProxyManager().getPort();
+      final Proxy proxy = new Proxy().setHttpProxy(proxyAddress).setSslProxy(proxyAddress);   
+      
+      chromeOptions.setProxy(proxy);
+      //chromeOptions.addArguments("--proxy-server=" + proxyAddress);
+      this.webDriver = new ChromeDriver(chromeOptions);
+      
+      mock.when(urlEquals("/")).then(respondWith(result.getResponse().getContentAsString()));
+
+      this.webDriver.get("http://blahblah.does.not.exists.com:1234");
+      
+      final HomePage homePage = PageFactory.initElements(this.webDriver, HomePage.class);
+      
+      assertThat(homePage.getAppName()).as("Application Name").isEqualTo("Facile UI Test Web Application");    
+    }    
   }
   
   @BeforeClass
