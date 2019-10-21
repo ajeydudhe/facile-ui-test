@@ -10,6 +10,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.PageFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -17,8 +23,13 @@ import org.testng.annotations.Test;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 import static org.expedientframework.facilemock.http.browsermob.HttpMockHelpers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class HomePageTest {
+@SpringBootTest
+@AutoConfigureMockMvc
+public class HomePageTest extends AbstractTestNGSpringContextTests {
   
   @Test
   public void applicationName_validName() {
@@ -61,6 +72,18 @@ public class HomePageTest {
     }    
   }
   
+  @Test
+  public void mockMvc_isNotNull() throws Exception {
+    
+    assertThat(this.mockMvc).as("MockMvc").isNotNull();
+    
+    final MvcResult result = this.mockMvc.perform(get("/"))
+                                 .andDo(print())
+                                 .andExpect(status().isOk()).andReturn();
+    
+    assertThat(result.getResponse().getContentAsString()).as("Response").contains("Facile UI Test Web Application");
+  }
+  
   @BeforeClass
   public void setUp() {
     
@@ -78,4 +101,7 @@ public class HomePageTest {
   
   // Private members
   private WebDriver webDriver;
+  
+  @Autowired
+  private MockMvc mockMvc;
 }
