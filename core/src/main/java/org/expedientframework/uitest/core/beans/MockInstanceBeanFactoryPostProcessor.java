@@ -9,7 +9,7 @@
  *
  *******************************************************************/
 
-package org.expedientframework.uitest.core;
+package org.expedientframework.uitest.core.beans;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -12,7 +12,7 @@
 package org.expedientframework.uitest;
 
 import org.expedientframework.uitest.controllers.HelloWorldController;
-import org.expedientframework.uitest.core.MockInstanceBeanFactoryPostProcessor;
+import org.expedientframework.uitest.core.beans.MockInstanceBeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

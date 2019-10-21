@@ -9,7 +9,7 @@
  *
  *******************************************************************/
 
-package org.expedientframework.uitest.core;
+package org.expedientframework.uitest.core.beans;
 
 import org.mockito.Mockito;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
