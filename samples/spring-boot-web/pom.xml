@@ -40,7 +40,7 @@
     </dependency>
     
     <dependency>
-      <groupId>org.expedientframework</groupId>
+      <groupId>org.expedientframework.uitest</groupId>
       <artifactId>facile-ui-test-core</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
