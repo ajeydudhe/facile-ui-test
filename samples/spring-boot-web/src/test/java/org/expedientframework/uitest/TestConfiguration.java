@@ -12,25 +12,17 @@
 package org.expedientframework.uitest;
 
 import org.expedientframework.uitest.controllers.HelloWorldController;
-import org.expedientframework.uitest.controllers.HomePageController;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.expedientframework.uitest.core.MockInstanceBeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class TestConfiguration implements BeanPostProcessor {
+public class TestConfiguration {
 
   @Bean
-  public HelloWorldController helloWorldController() {
+  public MockInstanceBeanFactoryPostProcessor mockInstanceBeanFactoryPostProcessor() {
     
-    return Mockito.mock(HelloWorldController.class);
-  }
-  
-  //@Bean
-  public HomePageController homePageController() {
-    
-    return new HomePageController();
+    return new MockInstanceBeanFactoryPostProcessor(HelloWorldController.class);
   }
 }
 

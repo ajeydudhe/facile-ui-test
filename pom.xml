@@ -8,6 +8,7 @@
   <description>Simple project for UI testing.</description>
   
   <modules>
+    <module>core</module>
     <module>samples</module>
   </modules>
 </project>
