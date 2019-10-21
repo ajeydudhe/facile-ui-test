@@ -10,6 +10,13 @@
   <description>Core library for UI test</description>
 
   <properties>
+    <!-- Plugins -->
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  
     <org.springframework.version>5.2.0.RELEASE</org.springframework.version>
     <mockito.version>3.1.0</mockito.version>
     <slf4j.version>1.7.28</slf4j.version>
@@ -33,6 +40,20 @@
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
-
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
