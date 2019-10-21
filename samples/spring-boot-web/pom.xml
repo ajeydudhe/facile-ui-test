@@ -7,7 +7,7 @@
     <version>2.2.0.RELEASE</version>
     <relativePath /> <!-- lookup parent from repository -->
   </parent>
-  <groupId>org.expedientframework</groupId>
+  <groupId>org.expedientframework.uitest</groupId>
   <artifactId>facile-ui-test-samples-spring-boot-web</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
