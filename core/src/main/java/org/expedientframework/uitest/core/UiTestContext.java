@@ -11,22 +11,12 @@
 
 package org.expedientframework.uitest.core;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.io.Closeable;
-import java.net.URI;
-import java.net.URL;
-import java.util.Map.Entry;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
+import org.springframework.test.web.servlet.RequestBuilder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -37,12 +27,13 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
-import net.lightbody.bmp.filters.RequestFilter;
 import net.lightbody.bmp.util.HttpMessageContents;
 import net.lightbody.bmp.util.HttpMessageInfo;
 
 /**
- * TODO: Update with a detailed description of the interface/class.
+ * The context class for executing tests using mock http requests and MockMvc.
+ * 
+ * @author ajey_dudhe
  *
  */
 public class UiTestContext implements Closeable {
@@ -82,19 +73,7 @@ public class UiTestContext implements Closeable {
       
       LOG.info("Received request [({}) {}]", request.getMethod().name(), messageInfo.getOriginalUrl());
       
-      final URI uri = new URI(messageInfo.getOriginalUrl());
-      
-      final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(uri.getPath());
-      
-      //TODO: Ajey - Need to handle application context !!!
-      //requestBuilder.contextPath("appPath");            
-      
-      for (Entry<String, String> header : request.headers())
-      {
-        requestBuilder.header(header.getKey(), header.getValue());
-      }
-
-      //requestBuilder.locale(browserLocale);
+      final RequestBuilder requestBuilder = MockMvcUtils.createRequestBuilder(request, contents, messageInfo);
       
       final MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 
