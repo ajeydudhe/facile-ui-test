@@ -101,13 +101,13 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
       assertThat(helloWorldController).as("helloWorldController").isNotNull();
       
       // Using Mockitto we mock the response at the controller class level
-      when(helloWorldController.greet()).thenReturn("My mocked hello world blah blah blah !!!");
+      when(helloWorldController.message()).thenReturn("My mocked hello world blah blah blah !!!");
       
       // Perform request using MockMvc  
       assertThat(this.mockMvc).as("MockMvc").isNotNull();
       
       // This will invoke the controller but return the mock response
-      final MvcResult result = this.mockMvc.perform(get("/hello/greet"))
+      final MvcResult result = this.mockMvc.perform(get("/hello"))
                                    .andDo(print())
                                    .andExpect(status().isOk()).andReturn();
       
@@ -125,14 +125,14 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
   }
 
   @Test
-  public void helloWorld_usingUiTestContext_succeeds() throws Exception {
+  public void helloWorld_usingUiTestContext_succeeds() {
     
     try (UiTestContext uiTestContext = new UiTestContext(this.mockMvc)) {
 
       assertThat(helloWorldController).as("helloWorldController").isNotNull();
       
       // Using Mockitto we mock the response at the controller class level
-      when(helloWorldController.greet()).thenReturn("My mocked hello world blah blah blah !!!");
+      when(helloWorldController.message()).thenReturn("My mocked hello world blah blah blah !!!");
       
       // Perform request using MockMvc  
       assertThat(this.mockMvc).as("MockMvc").isNotNull();
@@ -140,10 +140,52 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
       // Hook into http  request
       createWebDriver(uiTestContext.getProxyPort());
       
-      this.webDriver.get("http://blahblah.does.not.exists.com:1234/hello/greet");
+      this.webDriver.get("http://blahblah.does.not.exists.com:1234/hello");
 
       // Finally checking the response is mocked one
       assertThat(this.webDriver.getPageSource()).as("Hello message").isEqualTo("<html><head></head><body>My mocked hello world blah blah blah !!!</body></html>");    
+    }    
+  }
+
+  @Test
+  public void greet_usingUiTestContext_succeeds() {
+    
+    try (UiTestContext uiTestContext = new UiTestContext(this.mockMvc)) {
+
+      // Using Mockitto we mock the response at the controller class level
+      when(helloWorldController.greet("John")).thenReturn("Hello 'Blah' !!!");
+      
+      // Perform request using MockMvc  
+      assertThat(this.mockMvc).as("MockMvc").isNotNull();
+      
+      // Hook into http  request
+      createWebDriver(uiTestContext.getProxyPort());
+      
+      this.webDriver.get("http://blahblah.does.not.exists.com:1234/hello/greet/John");
+
+      // Finally checking the response is mocked one
+      assertThat(this.webDriver.getPageSource()).as("Hello message").isEqualTo("<html><head></head><body>Hello 'Blah' !!!</body></html>");    
+    }    
+  }
+
+  @Test
+  public void greetOnOccasion_succeeds() {
+    
+    try (UiTestContext uiTestContext = new UiTestContext(this.mockMvc)) {
+
+      // Using Mockitto we mock the response at the controller class level
+      when(helloWorldController.greetOnOccasion("John", "birthday")).thenReturn("Happy Diwali Doe !!!");
+      
+      // Perform request using MockMvc  
+      assertThat(this.mockMvc).as("MockMvc").isNotNull();
+      
+      // Hook into http  request
+      createWebDriver(uiTestContext.getProxyPort());
+      
+      this.webDriver.get("http://blahblah.does.not.exists.com:1234/hello/occasion/John?occasion=birthday");
+
+      // Finally checking the response is mocked one
+      assertThat(this.webDriver.getPageSource()).as("Hello message").isEqualTo("<html><head></head><body>Happy Diwali Doe !!!</body></html>");    
     }    
   }
   
