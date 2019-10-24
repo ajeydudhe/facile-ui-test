@@ -21,7 +21,31 @@ public class HomePage {
     return this.appNameElement.getText();
   }
   
+  public String getMessage() {
+    
+    return this.messageElement.getText();
+  }
+  
+  public void setName(final String name) {
+    
+    this.nameElement.sendKeys(name);
+  }
+  
+  public void clickMessageButton() {
+    
+    this.btnNameElement.click();
+  }
+  
   @FindBy(id = "lblAppName")
   protected WebElement appNameElement;
+
+  @FindBy(id = "lblMessage")
+  protected WebElement messageElement;
+
+  @FindBy(id = "txtName")
+  protected WebElement nameElement;
+
+  @FindBy(id = "btnNameClick")
+  protected WebElement btnNameElement;
 }
 

@@ -1,11 +1,19 @@
 <html>
   <head>
     <title>Home Page</title>
+    
+    <script type="text/javascript" src="js/hello.world.js"></script>
   </head>
   <body>
     <h1>Hello !</h1>
     <p>
       Welcome to <b><span id="lblAppName" th:text="${appName}">Our App</span></b>
+      <br/><br/>
+      <b>Name:</b>
+      <input id="txtName" type="text" placeholder="Enter name">
+      <button id="btnNameClick" onclick="sayHello();">Click !!!</button>
+      <br/><br/>
+      <b><span id="lblMessage"></span></b>
     </p>
   </body>
 </html>

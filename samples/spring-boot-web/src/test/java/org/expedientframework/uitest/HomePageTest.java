@@ -188,6 +188,27 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
       assertThat(this.webDriver.getPageSource()).as("Hello message").isEqualTo("<html><head></head><body>Happy Diwali Doe !!!</body></html>");    
     }    
   }
+
+  @Test
+  public void greetHelloFromHomePage_succeeds() {
+    
+    try (UiTestContext uiTestContext = new UiTestContext(this.mockMvc)) {
+
+      // Hook into http  request
+      createWebDriver(uiTestContext.getProxyPort());
+      
+      this.webDriver.get("http://blahblah.does.not.exists.com:1234");
+
+      final HomePage page = PageFactory.initElements(this.webDriver, HomePage.class);
+      
+      page.setName("John Doe");
+      
+      page.clickMessageButton();
+      
+      // Finally checking the response is mocked one
+      assertThat(page.getMessage()).as("Hello message").isEqualTo("Hello 'John Doe' !!!");    
+    }    
+  }
   
   private void createWebDriver(final HttpMockContext mock) {
     

@@ -31,8 +31,6 @@ class MockMvcUtils {
       
     try {
 
-      LOG.info("Received request [({}) {}]", request.getMethod().name(), messageInfo.getOriginalUrl());
-      
       final URI uri = new URI(messageInfo.getOriginalUrl());
       
       final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.request(request.getMethod().name(), uri);
