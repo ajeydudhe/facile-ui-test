@@ -1,13 +1,33 @@
-function loadStudentDetails() {
+function loadAllStudentDetails() {
   
   console.log('Loading student details...');
   
-  $.getJSON("students")
+  $.getJSON("/students")
     .done(function(students) {
     
     console.log('Received students: %s', JSON.stringify(students));
     
     displayStudents(students);
+    
+  }).fail(function(error) {
+    
+    console.error('### fail !!!' + JSON.stringify(error));
+    
+  });
+}
+
+function loadSingleStudentDetails() {
+  
+  var studentId = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1);
+  
+  console.log('Loading student details for %s...', studentId);
+  
+  $.getJSON('/students/' + studentId)
+    .done(function(student) {
+    
+    console.log('Received students: %s', JSON.stringify(student));
+    
+    displayStudentDetails(student);
     
   }).fail(function(error) {
     
@@ -32,7 +52,8 @@ function displayStudents(students) {
     
     tr = document.createElement("tr");
 
-    tr.appendChild(createElementWithContent("td", student.studentId));
+    var studentId = "<a href='/students/" + student.studentId + "' target='_blank'>" + student.studentId + "</a>";
+    tr.appendChild(createElementWithContent("td", studentId));
     tr.appendChild(createElementWithContent("td", student.firstName));
     tr.appendChild(createElementWithContent("td", student.lastName));
     tr.appendChild(createElementWithContent("td", student.age));
@@ -47,6 +68,14 @@ function displayStudents(students) {
   table.appendChild(tableRows);
 
   document.getElementById("studentDetails").appendChild(table);  
+}
+
+function displayStudentDetails(student) {
+
+  $('#txtStudentId').val(student.studentId);
+  $('#txtFirstName').val(student.firstName);
+  $('#txtLastName').val(student.lastName);
+  $('#txtAge').val(student.age);
 }
 
 function createElementWithContent(elementName, content) {

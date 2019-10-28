@@ -45,7 +45,13 @@ public class StudentController {
     return students;
   }
 
-  @GetMapping("/{studentId}")
+  @GetMapping(value = "/{studentId}", produces = "text/html")
+  public String studentPage(final @PathVariable String studentId) {
+    
+    return "student.details";
+  }
+
+  @GetMapping(value = "/{studentId}", produces = "application/json")
   @ResponseBody
   public Student student(final @PathVariable String studentId) {
     
