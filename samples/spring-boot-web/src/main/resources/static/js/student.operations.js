@@ -41,10 +41,10 @@ function displayStudents(students) {
   var tableRows = document.createDocumentFragment();
   
   var tr = document.createElement("tr");
-  tr.appendChild(createElementWithContent("td", "<b>ID</b>"));
-  tr.appendChild(createElementWithContent("td", "<b>First Name</b>"));
-  tr.appendChild(createElementWithContent("td", "<b>Last Name</b>"));
-  tr.appendChild(createElementWithContent("td", "<b>Age</b>"));
+  tr.appendChild(createElementWithContent("th", "", "<b>ID</b>"));
+  tr.appendChild(createElementWithContent("th", "", "<b>First Name</b>"));
+  tr.appendChild(createElementWithContent("th", "", "<b>Last Name</b>"));
+  tr.appendChild(createElementWithContent("th", "", "<b>Age</b>"));
   
   tableRows.appendChild(tr);
   
@@ -52,17 +52,18 @@ function displayStudents(students) {
     
     tr = document.createElement("tr");
 
-    var studentId = "<a href='/students/" + student.studentId + "' target='_blank'>" + student.studentId + "</a>";
-    tr.appendChild(createElementWithContent("td", studentId));
-    tr.appendChild(createElementWithContent("td", student.firstName));
-    tr.appendChild(createElementWithContent("td", student.lastName));
-    tr.appendChild(createElementWithContent("td", student.age));
+    var studentId = "<a id='studentId' href='/students/" + student.studentId + "' target='_blank'>" + student.studentId + "</a>";
+    tr.appendChild(createElementWithContent("td", "", studentId));
+    tr.appendChild(createElementWithContent("td", "firstName", student.firstName));
+    tr.appendChild(createElementWithContent("td", "lastName", student.lastName));
+    tr.appendChild(createElementWithContent("td", "age", student.age));
     
     tableRows.appendChild(tr);
   });
   
   var table = document.createElement("table");
-
+  table.id = "allStudents";
+  
   table.style.border = "1px solid black";
   
   table.appendChild(tableRows);
@@ -78,10 +79,12 @@ function displayStudentDetails(student) {
   $('#txtAge').val(student.age);
 }
 
-function createElementWithContent(elementName, content) {
+function createElementWithContent(tagName, elementId, content) {
   
-  var element = document.createElement(elementName);
+  var element = document.createElement(tagName);
   
+  element.id = elementId;
+    
   element.innerHTML = content;
   
   element.style.border = "1px solid black";

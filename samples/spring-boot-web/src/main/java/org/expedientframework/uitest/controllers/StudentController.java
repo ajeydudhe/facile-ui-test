@@ -66,8 +66,7 @@ public class StudentController {
     return String.format("Happy %s '%s' !!!", occasion, person);
   }
   
-  // Private methods
-  private Student createStudent(final String studentId) {
+  public static Student createStudent(final String studentId) {
     
     final Student student = new Student();
     

@@ -7,25 +7,10 @@ import org.expedientframework.facilemock.http.browsermob.HttpProxyManagerFactory
 import org.expedientframework.uitest.controllers.HelloWorldController;
 import org.expedientframework.uitest.core.UiTestContext;
 import org.expedientframework.uitest.pages.HomePage;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
 
 import static org.expedientframework.facilemock.http.browsermob.HttpMockHelpers.*;
 import static org.mockito.Mockito.when;
@@ -33,11 +18,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest//(classes = {TestConfiguration.class, HomePageController.class })
 //@ContextConfiguration(classes = {TestConfiguration.class })
-@AutoConfigureMockMvc
-@TestPropertySource(properties = "spring.main.allow-bean-definition-overriding=true") // To inject mock controller instance.
-public class HomePageTest extends AbstractTestNGSpringContextTests {
+public class HomePageTest extends AbstractPageTest {
   
   @Test
   public void applicationName_validName() {
@@ -63,7 +45,7 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
       // have to use the proxy port in address. We will need a way to forward the request to local server if the request is not to be mocked.
       //final int port = 8080; // mock.getHttpProxyManager().getPort()
       //final String url = String.format("http://localhost:%d", port);
-      this.webDriver.get("http://blahblah.does.not.exists.com:1234");
+      this.webDriver.get("http://blahblahDoesNotExists.com:1234");
       
       final HomePage homePage = PageFactory.initElements(this.webDriver, HomePage.class);
       
@@ -85,7 +67,7 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
       
       mock.when(urlEquals("/")).then(respondWith(homePageContents));
 
-      this.webDriver.get("http://blahblah.does.not.exists.com:1234");
+      this.webDriver.get("http://blahblahDoesNotExists.com:1234");
       
       final HomePage homePage = PageFactory.initElements(this.webDriver, HomePage.class);
       
@@ -117,7 +99,7 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
       // Here we are returning the response from MockMvc which calls into the mocked controller
       mock.when(urlEquals("/hello/greet")).then(respondWith(result.getResponse().getContentAsString()));
 
-      this.webDriver.get("http://blahblah.does.not.exists.com:1234/hello/greet");
+      this.webDriver.get("http://blahblahDoesNotExists.com:1234/hello/greet");
 
       // Finally checking the response is mocked one
       assertThat(this.webDriver.getPageSource()).as("Hello message").isEqualTo("<html><head></head><body>My mocked hello world blah blah blah !!!</body></html>");    
@@ -140,7 +122,7 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
       // Hook into http  request
       createWebDriver(uiTestContext.getProxyPort());
       
-      this.webDriver.get("http://blahblah.does.not.exists.com:1234/hello");
+      this.webDriver.get("http://blahblahDoesNotExists.com:1234/hello");
 
       // Finally checking the response is mocked one
       assertThat(this.webDriver.getPageSource()).as("Hello message").isEqualTo("<html><head></head><body>My mocked hello world blah blah blah !!!</body></html>");    
@@ -161,7 +143,7 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
       // Hook into http  request
       createWebDriver(uiTestContext.getProxyPort());
       
-      this.webDriver.get("http://blahblah.does.not.exists.com:1234/hello/greet/John");
+      this.webDriver.get("http://blahblahDoesNotExists.com:1234/hello/greet/John");
 
       // Finally checking the response is mocked one
       assertThat(this.webDriver.getPageSource()).as("Hello message").isEqualTo("<html><head></head><body>Hello 'Blah' !!!</body></html>");    
@@ -182,7 +164,7 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
       // Hook into http  request
       createWebDriver(uiTestContext.getProxyPort());
       
-      this.webDriver.get("http://blahblah.does.not.exists.com:1234/hello/occasion/John?occasion=birthday");
+      this.webDriver.get("http://blahblahDoesNotExists.com:1234/hello/occasion/John?occasion=birthday");
 
       // Finally checking the response is mocked one
       assertThat(this.webDriver.getPageSource()).as("Hello message").isEqualTo("<html><head></head><body>Happy Diwali Doe !!!</body></html>");    
@@ -197,7 +179,7 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
       // Hook into http  request
       createWebDriver(uiTestContext.getProxyPort());
       
-      this.webDriver.get("http://blahblah.does.not.exists.com:1234");
+      this.webDriver.get("http://blahblahDoesNotExists.com:1234");
 
       final HomePage page = PageFactory.initElements(this.webDriver, HomePage.class);
       
@@ -208,30 +190,6 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
       // Finally checking the response is mocked one
       assertThat(page.getMessage()).as("Hello message").isEqualTo("Hello 'John Doe' !!!");    
     }    
-  }
-  
-  private void createWebDriver(final HttpMockContext mock) {
-    
-    createWebDriver(mock.getHttpProxyManager().getPort());
-  }
-    
-  private void createWebDriver(final int proxyPort) {
-    
-    if(this.webDriver != null) {
-     
-      this.webDriver.close();
-    }
-    
-    final ChromeOptions chromeOptions = new ChromeOptions();
-    
-    chromeOptions.setHeadless(true);
-    
-    final String proxyAddress = "localhost:" + proxyPort;
-    final Proxy proxy = new Proxy().setHttpProxy(proxyAddress).setSslProxy(proxyAddress);   
-    
-    chromeOptions.setProxy(proxy);
-    //chromeOptions.addArguments("--proxy-server=" + proxyAddress);
-    this.webDriver = new ChromeDriver(chromeOptions);
   }
   
   private String getHomePageContents() {
@@ -253,32 +211,6 @@ public class HomePageTest extends AbstractTestNGSpringContextTests {
     }
   }
 
-  @BeforeClass
-  public void setUp() {
-
-    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-    
-    WebDriverManager.chromedriver().setup();
-  }
-  
-  @AfterClass
-  public void tearDown() {
-    
-    if(this.webDriver != null) {
-      
-      this.webDriver.close();
-    }
-  }
-  
-  // Private members
-  private WebDriver webDriver;
-  
-  //@Autowired
-  private MockMvc mockMvc;
-  
   @Autowired
-  private HelloWorldController helloWorldController;
-  
-  @Autowired
-  private WebApplicationContext wac;
+  private HelloWorldController helloWorldController;  
 }

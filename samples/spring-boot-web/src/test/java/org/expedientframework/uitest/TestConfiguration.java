@@ -12,6 +12,7 @@
 package org.expedientframework.uitest;
 
 import org.expedientframework.uitest.controllers.HelloWorldController;
+import org.expedientframework.uitest.controllers.StudentController;
 import org.expedientframework.uitest.core.beans.MockInstanceBeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +23,8 @@ public class TestConfiguration {
   @Bean
   public MockInstanceBeanFactoryPostProcessor mockInstanceBeanFactoryPostProcessor() {
     
-    return new MockInstanceBeanFactoryPostProcessor(HelloWorldController.class);
+    return new MockInstanceBeanFactoryPostProcessor(HelloWorldController.class, 
+                                                    StudentController.class);
   }
 }
 
