@@ -12,28 +12,34 @@
 package org.expedientframework.uitest.pages;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 
 public class StudentDetailsPage {
 
   
   public String getStudentId() {
   
-    return studentIdElement.getText();
+    return getValue(this.studentIdElement);
   }
   
   public String getFirstName() {
     
-    return firstNameElement.getText();
+    return getValue(this.firstNameElement);
   }
   
   public String getLastName() {
     
-    return lastNameElement.getText();
+    return getValue(this.lastNameElement);
   }
   
   public int getAge() {
     
-    return Integer.parseInt(ageElement.getText());
+    return Integer.parseInt(getValue(this.ageElement));
+  }
+  
+  public String getErrorMessage() {
+    
+    return this.errorMessageElement.getText();
   }
   
   public void setStudentIdElement(final WebElement studentIdElement) {
@@ -56,11 +62,25 @@ public class StudentDetailsPage {
     this.ageElement = ageElement;
   }
   
+  private static String getValue(final WebElement webElement) {
+    
+    return webElement.getTagName().equalsIgnoreCase("input") ? webElement.getAttribute("value") : webElement.getText();
+  }
+  
   // Private members
-  //@FindBy(id = "lblAppName")
+  @FindBy(id = "txtStudentId")
   private WebElement studentIdElement;  
+
+  @FindBy(id = "txtFirstName")
   private WebElement firstNameElement;  
+
+  @FindBy(id = "txtLastName")
   private WebElement lastNameElement;  
+
+  @FindBy(id = "txtAge")
   private WebElement ageElement;  
+  
+  @FindBy(id = "errorMessage")
+  private WebElement errorMessageElement;    
 }
 

@@ -15,19 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.expedientframework.uitest.students.Student;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Controller
 @RequestMapping("students")
 public class StudentController {
 
   @GetMapping(produces = "text/html")
-  public String studentsPage() {
+  public String allStudentsPage() {
     
     return "students";
   }
@@ -54,18 +55,15 @@ public class StudentController {
   @GetMapping(value = "/{studentId}", produces = "application/json")
   @ResponseBody
   public Student student(final @PathVariable String studentId) {
+      
+    if(studentId.startsWith("NotExists")) {
+      
+      throw HttpClientErrorException.create(HttpStatus.NOT_FOUND, String.format("Student '%s' not found.", studentId), null, null, null);
+    }
     
     return createStudent(studentId);
   }
 
-  @GetMapping("/occasion/{person}")
-  @ResponseBody
-  public String greetOnOccasion(final @PathVariable String person,
-                                final @RequestParam String occasion) {
-    
-    return String.format("Happy %s '%s' !!!", occasion, person);
-  }
-  
   public static Student createStudent(final String studentId) {
     
     final Student student = new Student();

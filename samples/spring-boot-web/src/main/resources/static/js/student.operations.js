@@ -33,6 +33,7 @@ function loadSingleStudentDetails() {
     
     console.error('### fail !!!' + JSON.stringify(error));
     
+    $('#errorMessage').text(error.responseText);
   });
 }
 
