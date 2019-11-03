@@ -11,8 +11,7 @@ function loadAllStudentDetails() {
     
   }).fail(function(error) {
     
-    console.error('### fail !!!' + JSON.stringify(error));
-    
+    console.error('### Error: %s', JSON.stringify(error));
   });
 }
 
@@ -31,7 +30,7 @@ function loadSingleStudentDetails() {
     
   }).fail(function(error) {
     
-    console.error('### fail !!!' + JSON.stringify(error));
+    console.error('### Error: %s', JSON.stringify(error));
     
     $('#errorMessage').text(error.responseText);
   });
@@ -39,84 +38,41 @@ function loadSingleStudentDetails() {
 
 function createStudent() {
   
-  var student = getStudent();
-  
-  console.log('Creating student: %s', JSON.stringify(student));
-  
-  //console.log(jQuery.isPlainObject(student));
-  
-  $.ajax({
-    
-    url: '/students',
-    type: 'POST',
-    data: JSON.stringify(student),
-    dataType: 'json',
-    contentType: 'application/json; charset=utf-8',
-    success: function(student) {
-      
-      console.log('Created student: %s', JSON.stringify(student));
-      
-      displayStudentDetails(student);
-    },
-    error: function(error) {
-      
-      console.error('### fail !!!' + JSON.stringify(error));
-      
-      $('#errorMessage').text(error.responseText);
-    }
-  });   
+  studentCRUD('POST', getStudent(), 'Create');
 }
 
 function updateStudent() {
   
-  var student = getStudent();
-  
-  console.log('Updating student: %s', JSON.stringify(student));
-
-  $.ajax({
-    
-    url: '/students',
-    type: 'PUT',
-    data: JSON.stringify(student),
-    dataType: 'json',
-    contentType: 'application/json; charset=utf-8',
-    success: function(student) {
-      
-      console.log('Updated student: %s', JSON.stringify(student));
-      
-      displayStudentDetails(student);
-    },
-    error: function(error) {
-      
-      console.error('### fail !!!' + JSON.stringify(error));
-      
-      $('#errorMessage').text(error.responseText);
-    }
-  });   
+  studentCRUD('PUT', getStudent(), 'Update');
 }
 
 function deleteStudent() {
   
+  studentCRUD('DELETE', getStudent(), 'Delete');
+}
+
+function studentCRUD(httpMethod, payload, operationContext) {
+  
   var student = getStudent();
   
-  console.log('Deleting student: %s', JSON.stringify(student));
+  console.log('%s student: %s', operationContext, JSON.stringify(student));
 
   $.ajax({
     
     url: '/students',
-    type: 'DELETE',
-    data: JSON.stringify(student),
+    type: httpMethod,
+    data: JSON.stringify(payload),
     dataType: 'json',
     contentType: 'application/json; charset=utf-8',
     success: function(student) {
       
-      console.log('Deleted student: %s', JSON.stringify(student));
+      console.log('%sd student: %s', operationContext, JSON.stringify(student));
       
       displayStudentDetails(student);
     },
     error: function(error) {
       
-      console.error('### fail !!!' + JSON.stringify(error));
+      console.error('### Error: %s', JSON.stringify(error));
       
       $('#errorMessage').text(error.responseText);
     }
