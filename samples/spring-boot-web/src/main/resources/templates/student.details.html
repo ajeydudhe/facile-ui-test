@@ -12,23 +12,26 @@
         <table>
           <tr>
             <td><b>Student ID</b></td>
-            <td><input id="txtStudentId" type="text" readonly/></td>
+            <td><input id="txtStudentId" type="text"/></td>
           </tr>
           <tr>
             <td><b>First Name</b></td>
-            <td><input id="txtFirstName" type="text" readonly/></td>
+            <td><input id="txtFirstName" type="text"/></td>
           </tr>
           <tr>
             <td><b>Last Name</b></td>
-            <td><input id="txtLastName" type="text" readonly/></td>
+            <td><input id="txtLastName" type="text"/></td>
           </tr>
           <tr>
             <td><b>Age</b></td>
-            <td><input id="txtAge" type="number" readonly/></td>
+            <td><input id="txtAge" type="number"/></td>
           </tr>
         </table>
         <br/>
         <span id="errorMessage" style="color:red"></span>
+        <button id="createStudent" onclick="createStudent()">Create</button>
+        <button id="updateStudent" onclick="updateStudent()">Update</button>
+        <button id="deleteStudent" onclick="deleteStudent()">Delete</button>
       </div>
     </p>
   </body>

@@ -71,7 +71,7 @@ public class UiTestContext implements Closeable {
     
     try {
       
-      LOG.info("Received request [({}) {}]", request.getMethod().name(), messageInfo.getOriginalUrl());
+      LOG.debug("Received request [({}) {}]", request.getMethod().name(), messageInfo.getOriginalUrl());
       
       final RequestBuilder requestBuilder = MockMvcUtils.createRequestBuilder(request, contents, messageInfo);
       
@@ -80,10 +80,12 @@ public class UiTestContext implements Closeable {
       final HttpResponseStatus httpStatus = HttpResponseStatus.valueOf(result.getResponse().getStatus());
       
       final ByteBuf buffer = Unpooled.wrappedBuffer(result.getResponse().getContentAsByteArray());
+      
       final HttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, httpStatus, buffer);
+      
       HttpHeaders.setContentLength(response, buffer.readableBytes());
       
-      String contentType = result.getResponse().getContentType();
+      final String contentType = result.getResponse().getContentType();
       
       //LOGGER.info("### ContentType [{}] : [{}]", contentType, relativeUrl);
       /*

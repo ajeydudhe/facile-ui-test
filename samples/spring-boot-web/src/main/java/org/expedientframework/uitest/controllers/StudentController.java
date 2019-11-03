@@ -17,8 +17,12 @@ import java.util.List;
 import org.expedientframework.uitest.students.Student;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
@@ -64,6 +68,42 @@ public class StudentController {
     return createStudent(studentId);
   }
 
+  @PostMapping(consumes = "application/json", produces = "application/json")
+  @ResponseBody
+  public Student createStudent(final @RequestBody Student student) {
+    
+    student.setStudentId("Created-" + student.getStudentId());
+    student.setFirstName("Created-" + student.getFirstName());
+    student.setLastName("Created-" + student.getLastName());
+    student.setAge(1 + student.getAge());
+    
+    return student;
+  }  
+
+  @PutMapping(consumes = "application/json", produces = "application/json")
+  @ResponseBody
+  public Student updateStudent(final @RequestBody Student student) {
+    
+    student.setStudentId("Updated-" + student.getStudentId());
+    student.setFirstName("Updated-" + student.getFirstName());
+    student.setLastName("Updated-" + student.getLastName());
+    student.setAge(student.getAge() - 1);
+    
+    return student;
+  }  
+
+  @DeleteMapping(consumes = "application/json", produces = "application/json")
+  @ResponseBody
+  public Student deleteStudent(final @RequestBody Student student) {
+    
+    student.setStudentId("Deleted-" + student.getStudentId());
+    student.setFirstName("Deleted-" + student.getFirstName());
+    student.setLastName("Deleted-" + student.getLastName());
+    student.setAge(0);
+    
+    return student;
+  }  
+  
   public static Student createStudent(final String studentId) {
     
     final Student student = new Student();

@@ -23,9 +23,9 @@ function loadSingleStudentDetails() {
   console.log('Loading student details for %s...', studentId);
   
   $.getJSON('/students/' + studentId)
-    .done(function(student) {
+   .done(function(student) {
     
-    console.log('Received students: %s', JSON.stringify(student));
+    console.log('Received student: %s', JSON.stringify(student));
     
     displayStudentDetails(student);
     
@@ -35,6 +35,92 @@ function loadSingleStudentDetails() {
     
     $('#errorMessage').text(error.responseText);
   });
+}
+
+function createStudent() {
+  
+  var student = getStudent();
+  
+  console.log('Creating student: %s', JSON.stringify(student));
+  
+  //console.log(jQuery.isPlainObject(student));
+  
+  $.ajax({
+    
+    url: '/students',
+    type: 'POST',
+    data: JSON.stringify(student),
+    dataType: 'json',
+    contentType: 'application/json; charset=utf-8',
+    success: function(student) {
+      
+      console.log('Created student: %s', JSON.stringify(student));
+      
+      displayStudentDetails(student);
+    },
+    error: function(error) {
+      
+      console.error('### fail !!!' + JSON.stringify(error));
+      
+      $('#errorMessage').text(error.responseText);
+    }
+  });   
+}
+
+function updateStudent() {
+  
+  var student = getStudent();
+  
+  console.log('Updating student: %s', JSON.stringify(student));
+
+  $.ajax({
+    
+    url: '/students',
+    type: 'PUT',
+    data: JSON.stringify(student),
+    dataType: 'json',
+    contentType: 'application/json; charset=utf-8',
+    success: function(student) {
+      
+      console.log('Updated student: %s', JSON.stringify(student));
+      
+      displayStudentDetails(student);
+    },
+    error: function(error) {
+      
+      console.error('### fail !!!' + JSON.stringify(error));
+      
+      $('#errorMessage').text(error.responseText);
+    }
+  });   
+}
+
+function deleteStudent() {
+  
+  var student = getStudent();
+  
+  console.log('Deleting student: %s', JSON.stringify(student));
+
+  $.ajax({
+    
+    url: '/students',
+    type: 'DELETE',
+    data: JSON.stringify(student),
+    dataType: 'json',
+    contentType: 'application/json; charset=utf-8',
+    success: function(student) {
+      
+      console.log('Deleted student: %s', JSON.stringify(student));
+      
+      displayStudentDetails(student);
+    },
+    error: function(error) {
+      
+      console.error('### fail !!!' + JSON.stringify(error));
+      
+      $('#errorMessage').text(error.responseText);
+    }
+  });   
 }
 
 function displayStudents(students) {
@@ -91,4 +177,15 @@ function createElementWithContent(tagName, elementId, content) {
   element.style.border = "1px solid black";
   
   return element;
+}
+
+function getStudent() {
+  
+  return {
+    
+    studentId: $('#txtStudentId').val(),
+    firstName: $('#txtFirstName').val(),
+    lastName: $('#txtLastName').val(),
+    age: $('#txtAge').val()
+  }
 }
