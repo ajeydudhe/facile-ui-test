@@ -2,12 +2,18 @@ package org.expedientframework.uitest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.util.UUID;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.expedientframework.uitest.controllers.StudentController;
 import org.expedientframework.uitest.pages.StudentDetailsPage;
 import org.expedientframework.uitest.students.Student;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
@@ -97,7 +103,7 @@ public class StudentDetailsPageTest extends AbstractPageTest {
     assertThat(studentController).as("StudentController").isNotNull();
     
     final Student dummyStudent = StudentController.createStudent("MyDummyStudent-" + UUID.randomUUID().toString());
-    final Student deletedStudent = StudentController.createStudent("MyUpdatedStudent-" + UUID.randomUUID().toString());
+    final Student deletedStudent = StudentController.createStudent("MyDeletedStudent-" + UUID.randomUUID().toString());
     
     when(studentController.studentPage(dummyStudent.getStudentId())).thenReturn("student.details");
     when(studentController.student(dummyStudent.getStudentId())).thenReturn(dummyStudent);
@@ -107,7 +113,21 @@ public class StudentDetailsPageTest extends AbstractPageTest {
     validate(dummyStudent, studentPage);
     
     // When update is called we return different student object which we validate.
-    when(studentController.deleteStudent(dummyStudent)).thenReturn(deletedStudent);
+    //when(studentController.deleteStudent(eq(dummyStudent), any(), any())).thenReturn(deletedStudent);
+    // For delete we are setting a header value which we validate in javascript.
+    when(studentController.deleteStudent(eq(dummyStudent), any(), any())).then(new Answer<Student>() {
+      
+      @Override
+      public Student answer(InvocationOnMock invocation) throws Throwable {
+        
+        final HttpServletResponse response = invocation.getArgument(2);
+        
+        response.setHeader("X-MY-DELETE-RESPONSE-HEADER", "ThisIsDeleteResponse");
+        
+        return deletedStudent;
+      }
+    });
+    
     studentPage.deleteStudent();
     
     validate(deletedStudent, studentPage);

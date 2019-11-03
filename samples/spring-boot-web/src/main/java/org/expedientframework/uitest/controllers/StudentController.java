@@ -14,6 +14,9 @@ package org.expedientframework.uitest.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.expedientframework.uitest.students.Student;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -95,12 +98,16 @@ public class StudentController {
 
   @DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
-  public Student deleteStudent(final @RequestBody Student student) {
+  public Student deleteStudent(final @RequestBody Student student, 
+                               final HttpServletRequest request, 
+                               final HttpServletResponse response) {
     
     student.setStudentId("Deleted-" + student.getStudentId());
     student.setFirstName("Deleted-" + student.getFirstName());
     student.setLastName("Deleted-" + student.getLastName());
     student.setAge(0);
+    
+    response.setHeader("X-MY-DELETE-RESPONSE-HEADER", "ThisIsDeleteResponse");
     
     return student;
   }  

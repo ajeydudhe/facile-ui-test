@@ -14,9 +14,8 @@ package org.expedientframework.uitest.core;
 import java.io.Closeable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -76,28 +75,25 @@ public class UiTestContext implements Closeable {
       
       final RequestBuilder requestBuilder = MockMvcUtils.createRequestBuilder(request, contents, messageInfo);
       
-      final MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-      LOG.debug("MockMvc response: {}", result.getResponse().getContentAsString());
+      final MockHttpServletResponse mockMvcResponse = mockMvc.perform(requestBuilder).andReturn().getResponse();
       
-      final HttpResponseStatus httpStatus = HttpResponseStatus.valueOf(result.getResponse().getStatus());
+      LOG.debug("MockMvc response: {}", mockMvcResponse.getContentAsString());
       
-      final ByteBuf buffer = Unpooled.wrappedBuffer(result.getResponse().getContentAsByteArray());
+      // Create response
+      final HttpResponseStatus httpStatus = HttpResponseStatus.valueOf(mockMvcResponse.getStatus());
+      
+      final ByteBuf buffer = Unpooled.wrappedBuffer(mockMvcResponse.getContentAsByteArray());
       
       final HttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, httpStatus, buffer);
       
       HttpHeaders.setContentLength(response, buffer.readableBytes());
       
-      String contentType = result.getResponse().getContentType();
-      
-      if(contentType == null) {
+      // Add response headers
+      LOG.info("MockMvc response headers: {}", mockMvcResponse.getHeaderNames());
+      for (String headerName : mockMvcResponse.getHeaderNames()) {
         
-        contentType = MediaType.APPLICATION_JSON_VALUE;
-
-        LOG.warn("### contentType was null and set to [{}]", contentType);        
+        HttpHeaders.setHeader(response, headerName, mockMvcResponse.getHeaderValues(headerName));
       }
-        
-      HttpHeaders.setHeader(response, HttpHeaders.Names.CONTENT_TYPE, contentType);
       
       return response;
     } catch (Exception e) {

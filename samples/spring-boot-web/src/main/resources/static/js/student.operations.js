@@ -62,9 +62,18 @@ function studentCRUD(httpMethod, payload, operationContext) {
     data: JSON.stringify(payload),
     dataType: 'json',
     contentType: 'application/json; charset=utf-8',
-    success: function(student) {
+    success: function(student, status, jqXHR) {
       
       console.log('%sd student: %s', operationContext, JSON.stringify(student));
+
+      // Special case for testing headers for delete operation only
+      var deleteHeaderValue = jqXHR.getResponseHeader('X-MY-DELETE-RESPONSE-HEADER');
+      console.log('deleteHeaderValue: %s', deleteHeaderValue);
+
+      if(operationContext === 'Delete' && deleteHeaderValue !== 'ThisIsDeleteResponse') {
+        
+        throw "deleteHeaderValue should be 'ThisIsDeleteResponse' but defined as '" + deleteHeaderValue + "' in response headers.";
+      }
       
       displayStudentDetails(student);
     },
