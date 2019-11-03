@@ -28,7 +28,7 @@ public class AllStudentsPage {
       
       final WebElement currentStudentElement = elements.get(nIndex);
       
-      final StudentDetailsPage student = new StudentDetailsPage();
+      final StudentDetailsPage student = new StudentDetailsPage(webDriver);
       
       student.setStudentIdElement(currentStudentElement.findElement(By.id("studentId")));
       student.setFirstNameElement(currentStudentElement.findElement(By.id("firstName")));

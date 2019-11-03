@@ -11,11 +11,17 @@
 
 package org.expedientframework.uitest.pages;
 
+import org.expedientframework.uitest.TestUtils;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 public class StudentDetailsPage {
-
+  
+  public StudentDetailsPage(final WebDriver webDriver) {
+    
+    this.webDriver = webDriver;
+  }
   
   public String getStudentId() {
   
@@ -62,12 +68,36 @@ public class StudentDetailsPage {
     this.ageElement = ageElement;
   }
   
+  public void createStudent() {
+
+    clickButtonAndWait(this.createStudentButtonElement);
+  }
+  
+  public void updateStudent() {
+
+    clickButtonAndWait(this.updateStudentButtonElement);
+  }
+
+  public void deleteStudent() {
+
+    clickButtonAndWait(this.deleteStudentButtonElement);
+  }
+  
+  private void clickButtonAndWait(final WebElement button) {
+    
+    button.click();
+    
+    TestUtils.waitForAjaxCalls(this.webDriver);
+  }
+  
   private static String getValue(final WebElement webElement) {
     
     return webElement.getTagName().equalsIgnoreCase("input") ? webElement.getAttribute("value") : webElement.getText();
   }
   
   // Private members
+  private final WebDriver webDriver;
+  
   @FindBy(id = "txtStudentId")
   private WebElement studentIdElement;  
 
@@ -81,6 +111,15 @@ public class StudentDetailsPage {
   private WebElement ageElement;  
   
   @FindBy(id = "errorMessage")
-  private WebElement errorMessageElement;    
+  private WebElement errorMessageElement;
+  
+  @FindBy(id = "createStudent")
+  private WebElement createStudentButtonElement;  
+  
+  @FindBy(id = "updateStudent")
+  private WebElement updateStudentButtonElement;  
+
+  @FindBy(id = "deleteStudent")
+  private WebElement deleteStudentButtonElement;  
 }
 

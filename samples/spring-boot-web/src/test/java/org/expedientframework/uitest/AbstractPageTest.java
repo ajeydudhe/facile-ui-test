@@ -11,13 +11,19 @@
 
 package org.expedientframework.uitest;
 
+import java.util.Date;
+import java.util.logging.Level;
+
 import org.expedientframework.facilemock.http.browsermob.HttpMockContext;
 import org.expedientframework.uitest.core.UiTestContext;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +34,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -56,6 +63,15 @@ public abstract class AbstractPageTest extends AbstractTestNGSpringContextTests 
     this.uiTestContext.close();
   }
   
+  @AfterMethod
+  public void printBrowserLogs() {
+    
+    for (LogEntry logEntry : this.webDriver.manage().logs().get(LogType.BROWSER)) {
+      
+      LOG.info("[BROWSER] {} {} {}", new Date(logEntry.getTimestamp()), logEntry.getLevel(), logEntry.getMessage());
+    }    
+  }
+  
   protected void createWebDriver(final HttpMockContext mock) {
     
     createWebDriver(mock.getHttpProxyManager().getPort());
@@ -70,13 +86,19 @@ public abstract class AbstractPageTest extends AbstractTestNGSpringContextTests 
     
     final ChromeOptions chromeOptions = new ChromeOptions();
     
-    chromeOptions.setHeadless(true);
+    chromeOptions.setHeadless(true);    
     
     final String proxyAddress = "localhost:" + proxyPort;
     final Proxy proxy = new Proxy().setHttpProxy(proxyAddress).setSslProxy(proxyAddress);   
     
     chromeOptions.setProxy(proxy);
     //chromeOptions.addArguments("--proxy-server=" + proxyAddress);
+    
+    final LoggingPreferences loggingPreferences = new LoggingPreferences();
+    loggingPreferences.enable(LogType.BROWSER, Level.ALL);
+    
+    chromeOptions.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
+    
     this.webDriver = new ChromeDriver(chromeOptions);
   }
   
@@ -88,7 +110,7 @@ public abstract class AbstractPageTest extends AbstractTestNGSpringContextTests 
     
     this.webDriver.get(url);
     
-    waitForAjaxCalls();
+    TestUtils.waitForAjaxCalls(this.webDriver);
     
     return PageFactory.initElements(this.webDriver, pageClass);
   }
@@ -96,35 +118,6 @@ public abstract class AbstractPageTest extends AbstractTestNGSpringContextTests 
   protected String getAbsoluteUrl(final String relativeUrl) {
       
     return "http://blahBlahBlahDoesNotExistsReally.dom/" + relativeUrl;
-  }
-  
-  protected void waitForAjaxCalls() {
-    
-    final JavascriptExecutor executor = (JavascriptExecutor) this.webDriver;
-    
-    int nCount = 0;
-    for(boolean scriptExecutionResult = false;
-        scriptExecutionResult == false && nCount < 10;
-        ++nCount) {
-      
-      scriptExecutionResult = (boolean) executor.executeScript("return jQuery.active == 0");
-
-      if(scriptExecutionResult) {
-        
-        return;
-      }
-      
-      LOG.info("Waiting for jQuery.active == 0 for [{}] time.", nCount + 1);
-      
-      try {
-        
-        Thread.sleep(100);
-        
-      } catch (InterruptedException e) {
-        
-        LOG.error("An error occurred.", e);
-      }
-    }
   }
   
   // Private members

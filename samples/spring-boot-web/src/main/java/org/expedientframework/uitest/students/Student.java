@@ -53,6 +53,24 @@ public class Student {
     this.studentId = studentId;
   }
 
+  @Override
+  public int hashCode() {
+
+    return this.studentId.hashCode();
+  }
+  
+  @Override
+  public boolean equals(final Object obj) {
+
+    if(obj instanceof Student) {
+      
+      final Student target = (Student) obj;
+      return this.studentId.equals(target.studentId);
+    }
+    
+    return false;
+  }
+  
   // Private members
   private String studentId;
   private String firstName;

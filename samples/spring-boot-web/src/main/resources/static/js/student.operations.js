@@ -53,9 +53,7 @@ function deleteStudent() {
 
 function studentCRUD(httpMethod, payload, operationContext) {
   
-  var student = getStudent();
-  
-  console.log('%s student: %s', operationContext, JSON.stringify(student));
+  console.log('%s student: %s', operationContext, JSON.stringify(payload));
 
   $.ajax({
     
@@ -72,7 +70,7 @@ function studentCRUD(httpMethod, payload, operationContext) {
     },
     error: function(error) {
       
-      console.error('### Error: %s', JSON.stringify(error));
+      console.error('### Error (%s): %s', operationContext, JSON.stringify(error));
       
       $('#errorMessage').text(error.responseText);
     }

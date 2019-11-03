@@ -14,6 +14,7 @@ package org.expedientframework.uitest.core;
 import java.io.Closeable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -71,12 +72,14 @@ public class UiTestContext implements Closeable {
     
     try {
       
-      LOG.debug("Received request [({}) {}]", request.getMethod().name(), messageInfo.getOriginalUrl());
+      LOG.info("Received request [({}) {}]", request.getMethod().name(), messageInfo.getOriginalUrl());
       
       final RequestBuilder requestBuilder = MockMvcUtils.createRequestBuilder(request, contents, messageInfo);
       
       final MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 
+      LOG.debug("MockMvc response: {}", result.getResponse().getContentAsString());
+      
       final HttpResponseStatus httpStatus = HttpResponseStatus.valueOf(result.getResponse().getStatus());
       
       final ByteBuf buffer = Unpooled.wrappedBuffer(result.getResponse().getContentAsByteArray());
@@ -85,18 +88,16 @@ public class UiTestContext implements Closeable {
       
       HttpHeaders.setContentLength(response, buffer.readableBytes());
       
-      final String contentType = result.getResponse().getContentType();
+      String contentType = result.getResponse().getContentType();
       
-      //LOGGER.info("### ContentType [{}] : [{}]", contentType, relativeUrl);
-      /*
-      if(contentType == null) // Content type is coming as null for somejavascript.min.js Check for file extension
-      {
-        contentType = "application/javascript";
-      }*/
-      
-      //LOGGER.info("### After: ContentType [{}] : [{}]", contentType, relativeUrl);
+      if(contentType == null) {
+        
+        contentType = MediaType.APPLICATION_JSON_VALUE;
 
-      HttpHeaders.setHeader(response, HttpHeaders.Names.CONTENT_TYPE, contentType == null ? "text/html" : contentType);
+        LOG.warn("### contentType was null and set to [{}]", contentType);        
+      }
+        
+      HttpHeaders.setHeader(response, HttpHeaders.Names.CONTENT_TYPE, contentType);
       
       return response;
     } catch (Exception e) {

@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.expedientframework.uitest.students.Student;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,7 +69,7 @@ public class StudentController {
     return createStudent(studentId);
   }
 
-  @PostMapping(consumes = "application/json", produces = "application/json")
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
   public Student createStudent(final @RequestBody Student student) {
     
@@ -80,7 +81,7 @@ public class StudentController {
     return student;
   }  
 
-  @PutMapping(consumes = "application/json", produces = "application/json")
+  @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
   public Student updateStudent(final @RequestBody Student student) {
     
@@ -92,7 +93,7 @@ public class StudentController {
     return student;
   }  
 
-  @DeleteMapping(consumes = "application/json", produces = "application/json")
+  @DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
   public Student deleteStudent(final @RequestBody Student student) {
     

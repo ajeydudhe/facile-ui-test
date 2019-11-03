@@ -44,10 +44,81 @@ public class StudentDetailsPageTest extends AbstractPageTest {
     
     final StudentDetailsPage studentPage = this.getPage("students/" + student.getStudentId(), StudentDetailsPage.class);
     
-    assertThat(studentPage.getStudentId()).as("Student ID").isEqualTo(student.getStudentId());
-    assertThat(studentPage.getFirstName()).as("First Name").isEqualTo(student.getFirstName());
-    assertThat(studentPage.getLastName()).as("Last Name").isEqualTo(student.getLastName());
-    assertThat(studentPage.getAge()).as("Age").isEqualTo(student.getAge());
+    validate(student, studentPage);
+  }
+
+  @Test
+  public void createStudent_studentCreated() {
+    
+    assertThat(studentController).as("StudentController").isNotNull();
+    
+    final Student dummyStudent = StudentController.createStudent("MyDummyStudent-" + UUID.randomUUID().toString());
+    final Student createdStudent = StudentController.createStudent("MyCreatedStudent-" + UUID.randomUUID().toString());
+    
+    when(studentController.studentPage(dummyStudent.getStudentId())).thenReturn("student.details");
+    when(studentController.student(dummyStudent.getStudentId())).thenReturn(dummyStudent);
+    
+    // Load the page with dummy student details and validate it.
+    final StudentDetailsPage studentPage = this.getPage("students/" + dummyStudent.getStudentId(), StudentDetailsPage.class);
+    validate(dummyStudent, studentPage);
+    
+    // When create is called we return different student object which we validate.
+    when(studentController.createStudent(dummyStudent)).thenReturn(createdStudent);
+    studentPage.createStudent();
+    
+    validate(createdStudent, studentPage);
+  }
+
+  @Test
+  public void updateStudent_studentUpdated() {
+    
+    assertThat(studentController).as("StudentController").isNotNull();
+    
+    final Student dummyStudent = StudentController.createStudent("MyDummyStudent-" + UUID.randomUUID().toString());
+    final Student updatedStudent = StudentController.createStudent("MyUpdatedStudent-" + UUID.randomUUID().toString());
+    
+    when(studentController.studentPage(dummyStudent.getStudentId())).thenReturn("student.details");
+    when(studentController.student(dummyStudent.getStudentId())).thenReturn(dummyStudent);
+    
+    // Load the page with dummy student details and validate it.
+    final StudentDetailsPage studentPage = this.getPage("students/" + dummyStudent.getStudentId(), StudentDetailsPage.class);
+    validate(dummyStudent, studentPage);
+    
+    // When update is called we return different student object which we validate.
+    when(studentController.updateStudent(dummyStudent)).thenReturn(updatedStudent);
+    studentPage.updateStudent();
+    
+    validate(updatedStudent, studentPage);
+  }
+
+  @Test
+  public void deleteStudent_studentDeleted() {
+    
+    assertThat(studentController).as("StudentController").isNotNull();
+    
+    final Student dummyStudent = StudentController.createStudent("MyDummyStudent-" + UUID.randomUUID().toString());
+    final Student deletedStudent = StudentController.createStudent("MyUpdatedStudent-" + UUID.randomUUID().toString());
+    
+    when(studentController.studentPage(dummyStudent.getStudentId())).thenReturn("student.details");
+    when(studentController.student(dummyStudent.getStudentId())).thenReturn(dummyStudent);
+    
+    // Load the page with dummy student details and validate it.
+    final StudentDetailsPage studentPage = this.getPage("students/" + dummyStudent.getStudentId(), StudentDetailsPage.class);
+    validate(dummyStudent, studentPage);
+    
+    // When update is called we return different student object which we validate.
+    when(studentController.deleteStudent(dummyStudent)).thenReturn(deletedStudent);
+    studentPage.deleteStudent();
+    
+    validate(deletedStudent, studentPage);
+  }
+  
+  private void validate(final Student expected, final StudentDetailsPage studentPage) {
+    
+    assertThat(studentPage.getStudentId()).as("Student ID").isEqualTo(expected.getStudentId());
+    assertThat(studentPage.getFirstName()).as("First Name").isEqualTo(expected.getFirstName());
+    assertThat(studentPage.getLastName()).as("Last Name").isEqualTo(expected.getLastName());
+    assertThat(studentPage.getAge()).as("Age").isEqualTo(expected.getAge());
   }
 
   @Autowired

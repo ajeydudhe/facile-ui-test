@@ -45,6 +45,8 @@ class MockMvcUtils {
         requestBuilder.header(header.getKey(), header.getValue());
       }
       
+      requestBuilder.content(contents.getBinaryContents());
+      
       return requestBuilder;        
     } catch (URISyntaxException e) {
 
