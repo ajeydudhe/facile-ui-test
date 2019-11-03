@@ -33,8 +33,15 @@ import net.lightbody.bmp.util.HttpMessageInfo;
 public class UiTestContext implements Closeable {
 
   public UiTestContext(final MockMvc mockMvc) {
+
+    this(mockMvc, null);
+  }
+  
+  public UiTestContext(final MockMvc mockMvc, final String contextPath) {
     
     this.mockMvc = mockMvc;
+    
+    this.contextPath = contextPath;
     
     this.httpProxy = new BrowserMobProxyServer();
     
@@ -42,7 +49,7 @@ public class UiTestContext implements Closeable {
     
     this.httpProxy.start();
   }
-  
+
   public int getProxyPort() {
   
     return this.httpProxy.getPort();
@@ -67,7 +74,7 @@ public class UiTestContext implements Closeable {
       
       LOG.info("Received request [({}) {}]", request.getMethod().name(), messageInfo.getOriginalUrl());
       
-      final RequestBuilder requestBuilder = MockMvcUtils.createRequestBuilder(request, contents, messageInfo);
+      final RequestBuilder requestBuilder = MockMvcUtils.createRequestBuilder(this.contextPath, request, contents, messageInfo);
       
       final MockHttpServletResponse mockMvcResponse = mockMvc.perform(requestBuilder).andReturn().getResponse();
       
@@ -86,6 +93,7 @@ public class UiTestContext implements Closeable {
   // Private members
   private final MockMvc mockMvc;
   private final BrowserMobProxy httpProxy;
+  private final String contextPath;
   private static final Logger LOG = LoggerFactory.getLogger(UiTestContext.class);
 }
 

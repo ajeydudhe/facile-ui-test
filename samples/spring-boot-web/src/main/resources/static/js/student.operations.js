@@ -1,8 +1,10 @@
+var myApplicationContextPath = '/myapp';
+
 function loadAllStudentDetails() {
   
   console.log('Loading student details...');
   
-  $.getJSON("/students")
+  $.getJSON(myApplicationContextPath + "/students")
     .done(function(students) {
     
     console.log('Received students: %s', JSON.stringify(students));
@@ -21,7 +23,7 @@ function loadSingleStudentDetails() {
   
   console.log('Loading student details for %s...', studentId);
   
-  $.getJSON('/students/' + studentId)
+  $.getJSON(myApplicationContextPath + '/students/' + studentId)
    .done(function(student) {
     
     console.log('Received student: %s', JSON.stringify(student));
@@ -57,7 +59,7 @@ function studentCRUD(httpMethod, payload, operationContext) {
 
   $.ajax({
     
-    url: '/students',
+    url: myApplicationContextPath + '/students',
     type: httpMethod,
     data: JSON.stringify(payload),
     dataType: 'json',
@@ -102,7 +104,7 @@ function displayStudents(students) {
     
     tr = document.createElement("tr");
 
-    var studentId = "<a id='studentId' href='/students/" + student.studentId + "' target='_blank'>" + student.studentId + "</a>";
+    var studentId = "<a id='studentId' href='" + myApplicationContextPath + "/students/" + student.studentId + "' target='_blank'>" + student.studentId + "</a>";
     tr.appendChild(createElementWithContent("td", "", studentId));
     tr.appendChild(createElementWithContent("td", "firstName", student.firstName));
     tr.appendChild(createElementWithContent("td", "lastName", student.lastName));

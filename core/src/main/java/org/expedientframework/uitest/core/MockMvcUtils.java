@@ -21,6 +21,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.util.StringUtils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,7 +36,10 @@ import net.lightbody.bmp.util.HttpMessageInfo;
 
 class MockMvcUtils {
 
-  public static RequestBuilder createRequestBuilder(final HttpRequest request, final HttpMessageContents contents, final HttpMessageInfo messageInfo) {
+  public static RequestBuilder createRequestBuilder(final String contextPath, 
+                                                    final HttpRequest request, 
+                                                    final HttpMessageContents contents, 
+                                                    final HttpMessageInfo messageInfo) {
       
     try {
 
@@ -43,8 +47,10 @@ class MockMvcUtils {
       
       final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.request(request.getMethod().name(), uri);
 
-      //TODO: Ajey - Need to handle application context !!!
-      //requestBuilder.contextPath("appPath");            
+      if(StringUtils.hasText(contextPath)) {
+        
+        requestBuilder.contextPath(contextPath);
+      }
       //requestBuilder.locale(browserLocale);
       
       // Add headers

@@ -49,7 +49,7 @@ public abstract class AbstractPageTest extends AbstractTestNGSpringContextTests 
 
     WebDriverManager.chromedriver().setup();
     
-    this.uiTestContext = new UiTestContext(this.mockMvc);
+    this.uiTestContext = new UiTestContext(this.mockMvc, AppContext);
     
     // Hook into http request
     createWebDriver(this.uiTestContext.getProxyPort());
@@ -117,7 +117,7 @@ public abstract class AbstractPageTest extends AbstractTestNGSpringContextTests 
   
   protected String getAbsoluteUrl(final String relativeUrl) {
       
-    return "http://blahBlahBlahDoesNotExistsReally.dom/" + relativeUrl;
+    return "http://blahBlahBlahDoesNotExistsReally.dom" + AppContext + "/" + relativeUrl;
   }
   
   // Private members
@@ -127,6 +127,8 @@ public abstract class AbstractPageTest extends AbstractTestNGSpringContextTests 
   protected MockMvc mockMvc;
   
   private UiTestContext uiTestContext;
+  
+  private static final String AppContext = "/myapp"; 
   
   private static final Logger LOG = LoggerFactory.getLogger(AbstractPageTest.class);
 }

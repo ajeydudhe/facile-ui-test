@@ -174,12 +174,12 @@ public class HomePageTest extends AbstractPageTest {
   @Test
   public void greetHelloFromHomePage_succeeds() {
     
-    try (UiTestContext uiTestContext = new UiTestContext(this.mockMvc)) {
+    try (UiTestContext uiTestContext = new UiTestContext(this.mockMvc, "/myapp")) {
 
       // Hook into http  request
       createWebDriver(uiTestContext.getProxyPort());
       
-      this.webDriver.get("http://blahblahDoesNotExists.com:1234");
+      this.webDriver.get("http://blahblahDoesNotExists.com:1234/myapp");
 
       final HomePage page = PageFactory.initElements(this.webDriver, HomePage.class);
       
