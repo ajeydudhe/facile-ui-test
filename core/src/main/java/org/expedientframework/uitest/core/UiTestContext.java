@@ -17,14 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpVersion;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.util.HttpMessageContents;
@@ -79,34 +73,19 @@ public class UiTestContext implements Closeable {
       
       LOG.debug("MockMvc response: {}", mockMvcResponse.getContentAsString());
       
-      // Create response
-      final HttpResponseStatus httpStatus = HttpResponseStatus.valueOf(mockMvcResponse.getStatus());
+      return MockMvcUtils.createResponse(mockMvcResponse);
       
-      final ByteBuf buffer = Unpooled.wrappedBuffer(mockMvcResponse.getContentAsByteArray());
-      
-      final HttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, httpStatus, buffer);
-      
-      HttpHeaders.setContentLength(response, buffer.readableBytes());
-      
-      // Add response headers
-      LOG.info("MockMvc response headers: {}", mockMvcResponse.getHeaderNames());
-      for (String headerName : mockMvcResponse.getHeaderNames()) {
-        
-        HttpHeaders.setHeader(response, headerName, mockMvcResponse.getHeaderValues(headerName));
-      }
-      
-      return response;
     } catch (Exception e) {
 
       LOG.error("An error occurred while processing http request.", e);
       
-      throw new RuntimeException(e); //TODO: Ajey - Throw custom exception !!!
+      throw new RuntimeException("An error occurred while performing MockMvc request/response.", e); //TODO: Ajey - Throw custom exception !!!
     }
   }
 
   // Private members
   private final MockMvc mockMvc;
   private final BrowserMobProxy httpProxy;
-  private final static Logger LOG = LoggerFactory.getLogger(UiTestContext.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UiTestContext.class);
 }
 
