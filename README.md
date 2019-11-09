@@ -58,4 +58,30 @@ public class TestConfiguration {
   }
 }
 ```
-In the constructor for the bean provide the list of MVC controller or other bean classes which needs to be mocked. If your MVC controller to be mocked has other dependencies which needs to be mocked then provide those also here.
+In the constructor for the bean provide the list of MVC controller or other bean classes which needs to be mocked. If your MVC controller to be mocked has other dependencies which needs to be mocked then provide those also here. Inject the mocked MVC controllers or other beans into your tests.
+### Writing a test with mocked http response
+```java
+@Test
+public void greet_usingUiTestContext_succeeds() {
+  
+  try (UiTestContext uiTestContext = new UiTestContext(this.mockMvc)) {
+
+    // Using Mockitto we mock the response at the controller class level
+    when(helloWorldController.greet("John")).thenReturn("Hello 'Blah' Dummy !!!");
+    
+    // Hook into http  request
+    createWebDriver(uiTestContext.getProxyPort());
+    
+    this.webDriver.get("http://localhost/hello/greet/John");
+
+    // Finally checking the response is mocked one
+    assertThat(this.webDriver.getPageSource()).as("Hello message").isEqualTo("<html><head></head><body>Hello 'Blah' Dummy !!!</body></html>");    
+  }    
+}
+```
+* First we are creating the _**UiTestContext**_ instance.
+* Next using _**Mockito**_ we define that _**helloWorldController.greet()**_ when called with parameter as John should return value as _"Hello 'Blah' Dummy !!!"_.
+* Next we are creating the WebDriver using the http proxy port.
+* Then we load the web page using _**this.webDriver.get("http://localhost/hello/greet/John");**_
+* Finally, we verify that we are getting the mock response.
+As seen above the entire web page is getting loaded as is in the browser but only the http response is getting mocked using _**Mockito**_.   

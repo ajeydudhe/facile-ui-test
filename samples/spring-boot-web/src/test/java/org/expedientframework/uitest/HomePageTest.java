@@ -135,7 +135,7 @@ public class HomePageTest extends AbstractPageTest {
     try (UiTestContext uiTestContext = new UiTestContext(this.mockMvc)) {
 
       // Using Mockitto we mock the response at the controller class level
-      when(helloWorldController.greet("John")).thenReturn("Hello 'Blah' !!!");
+      when(helloWorldController.greet("John")).thenReturn("Hello 'Blah' Dummy !!!");
       
       // Perform request using MockMvc  
       assertThat(this.mockMvc).as("MockMvc").isNotNull();
@@ -143,10 +143,10 @@ public class HomePageTest extends AbstractPageTest {
       // Hook into http  request
       createWebDriver(uiTestContext.getProxyPort());
       
-      this.webDriver.get("http://blahblahDoesNotExists.com:1234/hello/greet/John");
+      this.webDriver.get("http://localhost/hello/greet/John");
 
       // Finally checking the response is mocked one
-      assertThat(this.webDriver.getPageSource()).as("Hello message").isEqualTo("<html><head></head><body>Hello 'Blah' !!!</body></html>");    
+      assertThat(this.webDriver.getPageSource()).as("Hello message").isEqualTo("<html><head></head><body>Hello 'Blah' Dummy !!!</body></html>");    
     }    
   }
 
