@@ -45,7 +45,7 @@ protected void createWebDriver(final UiTestContext uiTestContext) {
 }
 ```
 ### Mock the MVC controllers or other beans
-In your test configuration create a bean for 
+In your test configuration create a bean for [_**MockInstanceBeanFactoryPostProcessor**_](/core/src/main/java/org/expedientframework/uitest/core/beans/MockInstanceBeanFactoryPostProcessor.java) as follows:
 ```java
 @Configuration
 public class TestConfiguration {
@@ -58,3 +58,4 @@ public class TestConfiguration {
   }
 }
 ```
+In the constructor for the bean provide the list of MVC controller or other bean classes which needs to be mocked. If your MVC controller to be mocked has other dependencies which needs to be mocked then provide those also here.
