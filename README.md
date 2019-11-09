@@ -80,8 +80,9 @@ public void greet_usingUiTestContext_succeeds() {
 }
 ```
 * First we are creating the _**UiTestContext**_ instance.
-* Next using _**Mockito**_ we define that _**helloWorldController.greet()**_ when called with parameter as John should return value as _"Hello 'Blah' Dummy !!!"_.
-* Next we are creating the WebDriver using the http proxy port.
+* Next using _**Mockito**_ we define that _**helloWorldController.greet()**_ when called with parameter as _**John**_ should return value as _**"Hello 'Blah' Dummy !!!"**_.
+* Next we are creating the _**WebDriver**_ instance using the http proxy port.
 * Then we load the web page using _**this.webDriver.get("http://localhost/hello/greet/John");**_
 * Finally, we verify that we are getting the mock response.
+
 As seen above the entire web page is getting loaded as is in the browser but only the http response is getting mocked using _**Mockito**_.   
