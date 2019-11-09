@@ -24,7 +24,7 @@ import org.springframework.lang.NonNull;
 /**
  * 
  * This class registers bean factory for specified class which returns the Mockito.mock(class) instance for mocking.
- * <br/>
+ * 
  * <b>Note:</b> If the bean definition already exists then it will be overridden else a new bean definition will be added. 
  * 
  * @author ajey_dudhe
