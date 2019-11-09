@@ -11,3 +11,41 @@ Add the maven dependency to your pom.xml as follows:
     <version>0.0.1-SNAPSHOT</version>
 </dependency>
 ```
+
+## Usage for Spring MVC project
+### Pre-requisite
+Make sure that [**MockMvc**](https://docs.spring.io/spring/docs/current/spring-framework-reference/testing.html#spring-mvc-test-framework) setup is complete. 
+Refer [**AbstractPageTest.java**](/samples/spring-boot-web/src/test/java/org/expedientframework/uitest/AbstractPageTest.java)
+### Create [**UiTestContext**](/core/src/main/java/org/expedientframework/uitest/core/UiTestContext.java)
+```java
+this.uiTestContext = new UiTestContext(this.mockMvc, "/myapp");
+```
+### Create WebDriver instance
+Use the _**UiTestContext.getProxyPort()**_ method to set the proxy for the WebDriver as below:
+```java
+  protected void createWebDriver(final UiTestContext uiTestContext) {
+    
+    if(this.webDriver != null) {
+     
+      this.webDriver.close();
+    }
+    
+    final ChromeOptions chromeOptions = new ChromeOptions();
+    
+    chromeOptions.setHeadless(true);    
+    
+    final String proxyAddress = "localhost:" + uiTestContext.getProxyPort();
+    final Proxy proxy = new Proxy().setHttpProxy(proxyAddress).setSslProxy(proxyAddress);   
+    
+    chromeOptions.setProxy(proxy);
+    // Required to use proxy for localhost address
+    chromeOptions.addArguments("--proxy-bypass-list=" + "<-loopback>");    
+    
+    final LoggingPreferences loggingPreferences = new LoggingPreferences();
+    loggingPreferences.enable(LogType.BROWSER, Level.ALL);
+    
+    chromeOptions.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
+    
+    this.webDriver = new ChromeDriver(chromeOptions);
+  }
+```
