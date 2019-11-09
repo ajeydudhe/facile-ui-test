@@ -93,6 +93,8 @@ public abstract class AbstractPageTest extends AbstractTestNGSpringContextTests 
     
     chromeOptions.setProxy(proxy);
     //chromeOptions.addArguments("--proxy-server=" + proxyAddress);
+    // Required to use proxy for localhost address
+    chromeOptions.addArguments("--proxy-bypass-list=" + "<-loopback>");    
     
     final LoggingPreferences loggingPreferences = new LoggingPreferences();
     loggingPreferences.enable(LogType.BROWSER, Level.ALL);
@@ -117,7 +119,9 @@ public abstract class AbstractPageTest extends AbstractTestNGSpringContextTests 
   
   protected String getAbsoluteUrl(final String relativeUrl) {
       
-    return "http://blahBlahBlahDoesNotExistsReally.dom" + AppContext + "/" + relativeUrl;
+    //return "http://blahBlahBlahDoesNotExistsReally.dom" + AppContext + "/" + relativeUrl;
+    
+    return "http://localhost:8080" + AppContext + "/" + relativeUrl;
   }
   
   // Private members

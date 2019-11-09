@@ -179,7 +179,8 @@ public class HomePageTest extends AbstractPageTest {
       // Hook into http  request
       createWebDriver(uiTestContext.getProxyPort());
       
-      this.webDriver.get("http://blahblahDoesNotExists.com:1234/myapp");
+      //this.webDriver.get("http://blahblahDoesNotExists.com:1234/myapp");
+      this.webDriver.get("http://localhost:8080/myapp");
 
       final HomePage page = PageFactory.initElements(this.webDriver, HomePage.class);
       
