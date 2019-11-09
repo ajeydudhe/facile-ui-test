@@ -1,0 +1,20 @@
+{
+  "name": "facile-ui-test-samples-expressjs",
+  "version": "1.0.0",
+  "description": "Sample web module created using expressjs.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ajeydudhe@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "express": "^4.17.1",
+    "gulp": "^4.0.2",
+    "run-sequence": "^2.2.1"
+  }
+}
