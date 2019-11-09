@@ -8,7 +8,7 @@ Add the maven dependency to your pom.xml as follows:
 <dependency>
     <groupId>org.expedientframework.uitest</groupId>
     <artifactId>facile-ui-test</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-M1</version>
 </dependency>
 ```
 
