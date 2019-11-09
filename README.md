@@ -85,4 +85,8 @@ public void greet_usingUiTestContext_succeeds() {
 * Then we load the web page using _**this.webDriver.get("http://localhost/hello/greet/John");**_
 * Finally, we verify that we are getting the mock response.
 
-As seen above the entire web page is getting loaded as is in the browser but only the http response is getting mocked using _**Mockito**_.   
+As seen above the entire web page is getting loaded as is in the browser but only the http response is getting mocked using _**Mockito**_.
+
+## Work in progress
+* Ability to mock only specific http requests so that we can have the web server running outside the test project.
+* Handle all request types e.g. form upload etc.   
