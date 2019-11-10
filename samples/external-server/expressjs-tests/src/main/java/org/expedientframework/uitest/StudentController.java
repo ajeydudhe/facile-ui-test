@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class StudentController {
 
-  @GetMapping(value = "/{studentId}", produces = "application/json")
+  @GetMapping(value = "/students/api/{studentId}", produces = "application/json")
   @ResponseBody
-  public Student student(final @PathVariable String studentId) {
-      
+  public Student student(final @PathVariable("studentId") String studentId) {
+    
     return null;
   }
 }

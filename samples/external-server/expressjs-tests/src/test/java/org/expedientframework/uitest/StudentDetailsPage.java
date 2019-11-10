@@ -11,16 +11,10 @@
 
 package org.expedientframework.uitest;
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 public class StudentDetailsPage {
-  
-  public StudentDetailsPage(final WebDriver webDriver) {
-    
-    this.webDriver = webDriver;
-  }
   
   public String getStudentId() {
   
@@ -40,11 +34,6 @@ public class StudentDetailsPage {
   public int getAge() {
     
     return Integer.parseInt(getValue(this.ageElement));
-  }
-  
-  public String getErrorMessage() {
-    
-    return this.errorMessageElement.getText();
   }
   
   public void setStudentIdElement(final WebElement studentIdElement) {
@@ -67,58 +56,22 @@ public class StudentDetailsPage {
     this.ageElement = ageElement;
   }
   
-  public void createStudent() {
-
-    clickButtonAndWait(this.createStudentButtonElement);
-  }
-  
-  public void updateStudent() {
-
-    clickButtonAndWait(this.updateStudentButtonElement);
-  }
-
-  public void deleteStudent() {
-
-    clickButtonAndWait(this.deleteStudentButtonElement);
-  }
-  
-  private void clickButtonAndWait(final WebElement button) {
-    
-    button.click();
-    
-    TestUtils.waitForAjaxCalls(this.webDriver);
-  }
-  
   private static String getValue(final WebElement webElement) {
     
     return webElement.getTagName().equalsIgnoreCase("input") ? webElement.getAttribute("value") : webElement.getText();
   }
   
   // Private members
-  private final WebDriver webDriver;
-  
-  @FindBy(id = "txtStudentId")
+  @FindBy(id = "studentId")
   private WebElement studentIdElement;  
 
-  @FindBy(id = "txtFirstName")
+  @FindBy(id = "firstName")
   private WebElement firstNameElement;  
 
-  @FindBy(id = "txtLastName")
+  @FindBy(id = "lastName")
   private WebElement lastNameElement;  
 
-  @FindBy(id = "txtAge")
+  @FindBy(id = "age")
   private WebElement ageElement;  
-  
-  @FindBy(id = "errorMessage")
-  private WebElement errorMessageElement;
-  
-  @FindBy(id = "createStudent")
-  private WebElement createStudentButtonElement;  
-  
-  @FindBy(id = "updateStudent")
-  private WebElement updateStudentButtonElement;  
-
-  @FindBy(id = "deleteStudent")
-  private WebElement deleteStudentButtonElement;  
 }
 

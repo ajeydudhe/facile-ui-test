@@ -108,7 +108,7 @@ class MockMvcRequestHandler {
     HttpHeaders.setContentLength(response, buffer.readableBytes());
     
     // Add response headers
-    LOG.info("MockMvc response headers: {}", mockMvcResponse.getHeaderNames());
+    LOG.debug("MockMvc response headers: {}", mockMvcResponse.getHeaderNames());
     
     for (String headerName : mockMvcResponse.getHeaderNames()) {
       

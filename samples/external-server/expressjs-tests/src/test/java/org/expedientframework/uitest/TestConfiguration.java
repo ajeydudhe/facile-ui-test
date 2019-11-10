@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 public class TestConfiguration {
 
   @Bean
-  public MockInstanceBeanFactoryPostProcessor mockInstanceBeanFactoryPostProcessor() {
+  public static MockInstanceBeanFactoryPostProcessor mockInstanceBeanFactoryPostProcessor() {
     
     return new MockInstanceBeanFactoryPostProcessor(StudentController.class);
   }
