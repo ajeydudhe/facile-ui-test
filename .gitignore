@@ -13,3 +13,4 @@ buildNumber.properties
 samples/external-server/expressjs/node/*
 samples/external-server/expressjs/node_modules/*
 samples/external-server/expressjs-tests/test-output/*
+samples/external-server/expressjs/package-lock.json
