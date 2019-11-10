@@ -9,5 +9,6 @@
   <packaging>pom</packaging>
   <modules>
     <module>expressjs</module>
+    <module>expressjs-tests</module>
   </modules>
 </project>
