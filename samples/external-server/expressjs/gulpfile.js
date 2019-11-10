@@ -15,11 +15,7 @@ gulp.task('server:start', function(callback){
   const port = 8080;
   const app = express();
   
-  //app.get('/', (req, res) => res.send('Hello World!'));
-
-  //app.use(express.static('public'));
-  
-//view engine setup
+  //view engine setup
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'pug');
 
