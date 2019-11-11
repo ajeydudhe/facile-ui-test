@@ -31,6 +31,8 @@ public class StudentDetailsPageTest extends AbstractTestNGSpringContextTests {
     WebDriver webDriver = null;
     try(UiTestContext uiTestContext = new UiTestContext(mockMvc)) {
       
+      uiTestContext.shouldMock((method, url, headers) -> url.contains("/api/"));
+      
       webDriver = createWebDriver(uiTestContext.getProxyPort());
       
       final String studentId = "MyStudent" + UUID.randomUUID().toString();
