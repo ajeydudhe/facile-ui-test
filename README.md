@@ -89,6 +89,95 @@ public void greet_usingUiTestContext_succeeds() {
 
 As seen above the entire web page is getting loaded as is in the browser but only the http response is getting mocked using _**Mockito**_.
 
+## Usage for non-Spring MVC project e.g. ExpressJS
+Above example suffices when you have the Spring MVC project. But what if you have created a web application using, say, ExpressJS. For such project you can create a separate Java project for writing the test. Refer [**⁨expressjs-tests**](/samples⁩/external-server/⁨expressjs-tests⁩).
+Here, the setup is similar to above except that we need to:
+* Start the external web server in another project.
+* Mock only the required http calls while other calls should go to the server.
+### Sample test case
+Following is a sample test case [**StudentDetailsPageTestIT**](/samples/external-server/expressjs-tests/src/test/java/org/expedientframework/uitest/StudentDetailsPageTestIT.java)
+```java
+@ContextConfiguration(classes = TestConfiguration.class)
+public class StudentDetailsPageTestIT extends AbstractTestNGSpringContextTests {
+  
+  @Test
+  public void getStudentByID_studentExists_displaysDetails() {
+    
+    final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(this.studentController).build();
+
+    WebDriver webDriver = null;
+    try(UiTestContext uiTestContext = new UiTestContext(mockMvc)) {
+      
+      uiTestContext.shouldMock((method, url, headers) -> url.contains("/api/"));
+      
+      webDriver = createWebDriver(uiTestContext.getProxyPort());
+      
+      final String studentId = "MyStudent" + UUID.randomUUID().toString();
+      final Student mockedStudent = createStudent("Mocked-" + UUID.randomUUID().toString());
+      
+      when(studentController.student(studentId)).thenReturn(mockedStudent);
+      
+      webDriver.get("http://localhost:8080/students/" + studentId);
+      
+      TestUtils.waitForAjaxCalls(webDriver);
+      
+      final StudentDetailsPage studentPage = PageFactory.initElements(webDriver, StudentDetailsPage.class);
+      
+      LOG.info("Page Source: {}{}", System.getProperty("line.separator"), webDriver.getPageSource());
+      
+      // Welcome message is not mocked so should be as per stidentID passed.
+      assertThat(studentPage.getWelcomeMessage()).as("Welcome Message").isEqualTo("Welcome " + studentId);
+      
+      // Below all is mocked so should match mockedStudent
+      assertThat(studentPage.getStudentId()).as("Student ID").isEqualTo(mockedStudent.getStudentId());
+      assertThat(studentPage.getFirstName()).as("First Name").isEqualTo(mockedStudent.getFirstName());
+      assertThat(studentPage.getLastName()).as("Last Name").isEqualTo(mockedStudent.getLastName());
+      assertThat(studentPage.getAge()).as("Age").isEqualTo(mockedStudent.getAge());
+    } finally {
+      
+      if(webDriver != null) {
+        
+        webDriver.close();
+      }
+    }
+  }
+  
+  //... Few line omitted...
+  
+  private static Student createStudent(final String studentId) {
+    
+    final Student student = new Student();
+    
+    student.setStudentId(studentId);
+    student.setFirstName(studentId + "-firstName");
+    student.setLastName(studentId + "-lastName");
+    student.setAge(12);
+    
+    return student;
+  }
+   
+  @Autowired
+  private StudentController studentController;
+  private static final Logger LOG = LoggerFactory.getLogger(StudentDetailsPageTestIT.class);
+}
+```
+* The _**@ContextConfiguration(classes = TestConfiguration.class)**_ on the test class is used to initialized the mock controllers as mentioned in [Mock the MVC controllers or other beans](#mock-the-mvc-controllers-or-other-beans)
+* At the start of the test we create the **MockMvc** instance using the MVC controller we are going to mock.
+    ```java
+    final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(this.studentController).build();
+    ```
+* We then create and initialize the **webDriver** instance as mentioned in [**Create WebDriver instance**](#create-webdriver-instance)
+  ```java
+  webDriver = createWebDriver(uiTestContext.getProxyPort());
+  ```
+* In our sample app. we request a student details passing in the student id in url and on page load make a REST call to fetch the student details.
+* For our test we are going to load this page and mock the REST call to return mocked data.
+* Below we use random studenId value and also a random mocked student object.
+  ```java
+  final String studentId = "MyStudent" + UUID.randomUUID().toString();
+  final Student mockedStudent = createStudent("Mocked-" + UUID.randomUUID().toString());
+  ```
+* 
 ## Work in progress
 * Ability to mock only specific http requests so that we can have the web server running outside the test project.
 * Handle all request types e.g. form upload etc.   
