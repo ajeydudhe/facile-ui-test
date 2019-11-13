@@ -10,6 +10,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.PageFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -21,7 +23,7 @@ import org.testng.annotations.Test;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 @ContextConfiguration(classes = TestConfiguration.class)
-public class StudentDetailsPageTest extends AbstractTestNGSpringContextTests {
+public class StudentDetailsPageTestIT extends AbstractTestNGSpringContextTests {
   
   @Test
   public void getStudentByID_studentExists_displaysDetails() {
@@ -46,8 +48,12 @@ public class StudentDetailsPageTest extends AbstractTestNGSpringContextTests {
       
       final StudentDetailsPage studentPage = PageFactory.initElements(webDriver, StudentDetailsPage.class);
       
-      System.out.println(webDriver.getPageSource());
+      LOG.info("Page Source: {}{}", System.getProperty("line.separator"), webDriver.getPageSource());
       
+      // Welcome message is not mocked so should be as per stidentID passed.
+      assertThat(studentPage.getWelcomeMessage()).as("Welcome Message").isEqualTo("Welcome " + studentId);
+      
+      // Below all is mocked so should match mockedStudent
       assertThat(studentPage.getStudentId()).as("Student ID").isEqualTo(mockedStudent.getStudentId());
       assertThat(studentPage.getFirstName()).as("First Name").isEqualTo(mockedStudent.getFirstName());
       assertThat(studentPage.getLastName()).as("Last Name").isEqualTo(mockedStudent.getLastName());
@@ -98,4 +104,5 @@ public class StudentDetailsPageTest extends AbstractTestNGSpringContextTests {
    
   @Autowired
   private StudentController studentController;
+  private static final Logger LOG = LoggerFactory.getLogger(StudentDetailsPageTestIT.class);
 }

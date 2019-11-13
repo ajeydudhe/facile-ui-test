@@ -36,32 +36,20 @@ public class StudentDetailsPage {
     return Integer.parseInt(getValue(this.ageElement));
   }
   
-  public void setStudentIdElement(final WebElement studentIdElement) {
+  public String getWelcomeMessage() {
     
-    this.studentIdElement = studentIdElement;
+    return getValue(this.welcomeMessageIdElement);
   }
-  
-  public void setFirstNameElement(final WebElement firstNameElement) {
-    
-    this.firstNameElement = firstNameElement;
-  }
-  
-  public void setLastNameElement(final WebElement lastNameElement) {
-    
-    this.lastNameElement = lastNameElement;
-  }
-  
-  public void setAgeElement(final WebElement ageElement) {
-    
-    this.ageElement = ageElement;
-  }
-  
+
   private static String getValue(final WebElement webElement) {
     
     return webElement.getTagName().equalsIgnoreCase("input") ? webElement.getAttribute("value") : webElement.getText();
   }
   
   // Private members
+  @FindBy(id = "welcomeMessage")
+  private WebElement welcomeMessageIdElement;  
+
   @FindBy(id = "studentId")
   private WebElement studentIdElement;  
 

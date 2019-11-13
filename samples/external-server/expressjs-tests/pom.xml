@@ -18,7 +18,80 @@
     <ch.qos.logback.version>1.2.3</ch.qos.logback.version>
     <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
     <com.fasterxml.jackson.core>2.10.0</com.fasterxml.jackson.core>
+    <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+    <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
   </properties>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>${frontend-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>${exec-maven-plugin.version}</version>
+          <configuration>
+            <executable>./node/node</executable>
+            <workingDirectory>../expressjs</workingDirectory>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${maven-failsafe-plugin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>start-server</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>pre-integration-test</phase>
+            <configuration>
+              <arguments>
+                <argument>node_modules/forever/bin/forever</argument>
+                <argument>start</argument>
+                <argument>node_modules/gulp/bin/gulp.js</argument>
+                <argument>server:start</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop-server</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>post-integration-test</phase>
+            <configuration>
+              <arguments>
+                <argument>node_modules/forever/bin/forever</argument>
+                <argument>stopall</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <dependency>
