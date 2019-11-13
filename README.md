@@ -44,6 +44,8 @@ protected void createWebDriver(final UiTestContext uiTestContext) {
   this.webDriver = new ChromeDriver(chromeOptions);
 }
 ```
+**Note:** Make sure to add _**--proxy-bypass-list=<-loopback>**_ argument so that the _**localhost**_ address is proxied.
+
 ### Mock the MVC controllers or other beans
 In your test configuration create a bean for [_**MockInstanceBeanFactoryPostProcessor**_](/core/src/main/java/org/expedientframework/uitest/core/beans/MockInstanceBeanFactoryPostProcessor.java) as follows:
 ```java
