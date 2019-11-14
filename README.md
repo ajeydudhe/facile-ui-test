@@ -187,7 +187,7 @@ public class StudentDetailsPageTestIT extends AbstractTestNGSpringContextTests {
   ```
 * Once loaded we get the Page object.
 * Now, we start the validation.
-* First on the web page there is a message for the student as "Welcome <studentId>".
+* First on the web page there is a message for the student as "Welcome &lt;studentId>".
 * We validate that this message is formed using the studentId passed in the page url.
   ```java
   assertThat(studentPage.getWelcomeMessage()).as("Welcome Message").isEqualTo("Welcome " + studentId);      
