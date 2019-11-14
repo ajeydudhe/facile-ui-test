@@ -177,7 +177,28 @@ public class StudentDetailsPageTestIT extends AbstractTestNGSpringContextTests {
   final String studentId = "MyStudent" + UUID.randomUUID().toString();
   final Student mockedStudent = createStudent("Mocked-" + UUID.randomUUID().toString());
   ```
-* 
+* We define the mock behavior as below. It implies that we should return the _**mockedStudent**_ instance when the controller methods is called.
+  ```java
+  when(studentController.student(studentId)).thenReturn(mockedStudent);
+  ``` 
+* Now, we load the web page using _**webDriver**_.
+  ```java
+  webDriver.get("http://localhost:8080/students/" + studentId);
+  ```
+* Once loaded we get the Page object.
+* Now, we start the validation.
+* First on the web page there is a message for the student as "Welcome <studentId>".
+* We validate that this message is formed using the studentId passed in the page url.
+  ```java
+  assertThat(studentPage.getWelcomeMessage()).as("Welcome Message").isEqualTo("Welcome " + studentId);      
+  ```
+* Now, below is the validation to make sure the REST request returned the _**mockedStudent**_ instance which has different studentId than the one we used in loading the page. The values on the page are retrieved using [**StudentDetailsPage**](/samples/external-server/expressjs-tests/src/test/java/org/expedientframework/uitest/StudentDetailsPage.java).
+  ```java
+  assertThat(studentPage.getStudentId()).as("Student ID").isEqualTo(mockedStudent.getStudentId());
+  assertThat(studentPage.getFirstName()).as("First Name").isEqualTo(mockedStudent.getFirstName());
+  assertThat(studentPage.getLastName()).as("Last Name").isEqualTo(mockedStudent.getLastName());
+  assertThat(studentPage.getAge()).as("Age").isEqualTo(mockedStudent.getAge());
+  ```
+
 ## Work in progress
-* Ability to mock only specific http requests so that we can have the web server running outside the test project.
 * Handle all request types e.g. form upload etc.   
