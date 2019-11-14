@@ -90,7 +90,7 @@ public void greet_usingUiTestContext_succeeds() {
 As seen above the entire web page is getting loaded as is in the browser but only the http response is getting mocked using _**Mockito**_.
 
 ## Usage for non-Spring MVC project e.g. ExpressJS
-Above example suffices when you have the Spring MVC project. But what if you have created a web application using, say, ExpressJS. For such project you can create a separate Java project for writing the test. Refer [**⁨expressjs-tests**](/samples⁩/external-server/⁨expressjs-tests⁩/).
+Above example suffices when you have the Spring MVC project. But what if you have created a web application using, say, ExpressJS. For such project you can create a separate Java project for writing the test. Refer [**⁨expressjs-tests**](/samples⁩/external-server/⁨expressjs-tests⁩).
 Here, the setup is similar to above except that we need to:
 * Start the external web server in another project.
 * Mock only the required http calls while other calls should go to the server.
