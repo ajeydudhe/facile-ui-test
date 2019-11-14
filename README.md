@@ -166,6 +166,10 @@ public class StudentDetailsPageTestIT extends AbstractTestNGSpringContextTests {
     ```java
     final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(this.studentController).build();
     ```
+* We create the _**UiTestContext**_ instance and define that only the urls containing _**/api/**_ needs to be mocked.
+  ```java
+  uiTestContext.shouldMock((method, url, headers) -> url.contains("/api/"));
+  ```
 * We then create and initialize the **webDriver** instance as mentioned in [**Create WebDriver instance**](#create-webdriver-instance)
   ```java
   webDriver = createWebDriver(uiTestContext.getProxyPort());
