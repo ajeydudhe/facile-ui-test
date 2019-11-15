@@ -10,7 +10,7 @@ Add the maven dependency to your pom.xml as follows:
 <dependency>
     <groupId>org.expedientframework.uitest</groupId>
     <artifactId>facile-ui-test</artifactId>
-    <version>1.0.0-M1</version>
+    <version>1.0.0-M2</version>
 </dependency>
 ```
 
@@ -206,5 +206,5 @@ public class StudentDetailsPageTestIT extends AbstractTestNGSpringContextTests {
   assertThat(studentPage.getAge()).as("Age").isEqualTo(mockedStudent.getAge());
   ```
 
-## Work in progress
+## Open items
 * Handle all request types e.g. form upload etc.   
