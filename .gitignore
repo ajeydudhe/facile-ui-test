@@ -10,3 +10,8 @@ buildNumber.properties
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
+samples/external-server/expressjs/node/*
+samples/external-server/expressjs/node_modules/*
+samples/external-server/expressjs-tests/test-output/*
+samples/external-server/expressjs/package-lock.json
+samples/external-server/expressjs/npm-debug.log

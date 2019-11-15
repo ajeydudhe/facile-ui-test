@@ -1,0 +1,35 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/jquery-3.4.1.min.js')
+    script(src='/javascripts/student.operations.js')
+  body(onload='loadSingleStudentDetails()')
+    p
+      b 
+        span(id='welcomeMessage') Welcome #{studentId}
+    div
+      table(border='1')
+        tr
+          td 
+            b Student ID
+          td
+            input(id='studentId', readonly)
+        tr
+          td 
+            b First Name
+          td
+            input(id='firstName', readonly)
+        tr
+          td 
+            b Last Name
+          td
+            input(id='lastName', readonly)
+        tr
+          td 
+            b Age
+          td
+            input(id='age', readonly)
+        
+        

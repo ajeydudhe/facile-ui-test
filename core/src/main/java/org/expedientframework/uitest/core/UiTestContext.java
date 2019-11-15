@@ -42,6 +42,11 @@ public class UiTestContext implements Closeable {
     this.httpProxy.start();
   }
 
+  public void shouldMock(final MockRequestPredicate mockRequestPredicate) {
+    
+    this.mockRequestPredicate = mockRequestPredicate;
+  }
+  
   public int getProxyPort() {
   
     return this.httpProxy.getPort();
@@ -56,7 +61,7 @@ public class UiTestContext implements Closeable {
     
     this.httpProxy.addRequestFilter((request, contents, messageInfo) -> {
       
-      return MockMvcRequestHandler.create(contextPath, request, contents, messageInfo)
+      return MockMvcRequestHandler.create(this.contextPath, request, contents, messageInfo, this.mockRequestPredicate)
                                   .execute(this.mockMvc);
     });
   }
@@ -65,5 +70,6 @@ public class UiTestContext implements Closeable {
   private final MockMvc mockMvc;
   private final BrowserMobProxy httpProxy;
   private final String contextPath;
+  private MockRequestPredicate mockRequestPredicate;
 }
 

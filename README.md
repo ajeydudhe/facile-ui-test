@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/ajeydudhe/facile-ui-test.svg?branch=master)](https://travis-ci.org/ajeydudhe/facile-ui-test) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 # facile-ui-test - Library to test UI with mock http responses.
-**facile-ui-test** can be used to write UI tests especially for Spring MVC projects. It uses [**BrowserMobProxy**](https://github.com/lightbody/browsermob-proxy) to complete the http request flow from the browser to [**MockMvc**](https://docs.spring.io/spring/docs/current/spring-framework-reference/testing.html#spring-mvc-test-framework) and additionally use [**Mockito**](https://site.mockito.org/) to define the mock http responses.
+**facile-ui-test** can be used to write UI tests especially for Spring MVC projects. It uses [**BrowserMobProxy**](https://github.com/lightbody/browsermob-proxy) to complete the http request flow from the UI test => browser => http proxy => [**MockMvc**](https://docs.spring.io/spring/docs/current/spring-framework-reference/testing.html#spring-mvc-test-framework) => UI test. Additionally, you can use [**Mockito**](https://site.mockito.org/) to define the mock http responses.
+<br/><br/>
+![Workflow](facile-ui-test.png)
 
 ## Adding the library reference
 Add the maven dependency to your pom.xml as follows:
@@ -8,7 +10,7 @@ Add the maven dependency to your pom.xml as follows:
 <dependency>
     <groupId>org.expedientframework.uitest</groupId>
     <artifactId>facile-ui-test</artifactId>
-    <version>1.0.0-M1</version>
+    <version>1.0.0-M2</version>
 </dependency>
 ```
 
@@ -44,6 +46,8 @@ protected void createWebDriver(final UiTestContext uiTestContext) {
   this.webDriver = new ChromeDriver(chromeOptions);
 }
 ```
+**Note:** Make sure to add _**--proxy-bypass-list=<-loopback>**_ argument so that the _**localhost**_ address is proxied.
+
 ### Mock the MVC controllers or other beans
 In your test configuration create a bean for [_**MockInstanceBeanFactoryPostProcessor**_](/core/src/main/java/org/expedientframework/uitest/core/beans/MockInstanceBeanFactoryPostProcessor.java) as follows:
 ```java
@@ -87,6 +91,120 @@ public void greet_usingUiTestContext_succeeds() {
 
 As seen above the entire web page is getting loaded as is in the browser but only the http response is getting mocked using _**Mockito**_.
 
-## Work in progress
-* Ability to mock only specific http requests so that we can have the web server running outside the test project.
+## Usage for non-Spring MVC project e.g. ExpressJS
+Above example suffices when you have the Spring MVC project. But what if you have created a web application using, say, ExpressJS. For such project you can create a separate Java project for writing the test. Refer _**/samples⁩/external-server/⁨expressjs-tests⁩**_.
+Here, the setup is similar to above except that we need to:
+* Start the external web server in another project.
+* Mock only the required http calls while other calls should go to the server.
+### Sample test case
+Following is a sample test case [**StudentDetailsPageTestIT**](/samples/external-server/expressjs-tests/src/test/java/org/expedientframework/uitest/StudentDetailsPageTestIT.java)
+```java
+@ContextConfiguration(classes = TestConfiguration.class)
+public class StudentDetailsPageTestIT extends AbstractTestNGSpringContextTests {
+  
+  @Test
+  public void getStudentByID_studentExists_displaysDetails() {
+    
+    final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(this.studentController).build();
+
+    WebDriver webDriver = null;
+    try(UiTestContext uiTestContext = new UiTestContext(mockMvc)) {
+      
+      uiTestContext.shouldMock((method, url, headers) -> url.contains("/api/"));
+      
+      webDriver = createWebDriver(uiTestContext.getProxyPort());
+      
+      final String studentId = "MyStudent" + UUID.randomUUID().toString();
+      final Student mockedStudent = createStudent("Mocked-" + UUID.randomUUID().toString());
+      
+      when(studentController.student(studentId)).thenReturn(mockedStudent);
+      
+      webDriver.get("http://localhost:8080/students/" + studentId);
+      
+      TestUtils.waitForAjaxCalls(webDriver);
+      
+      final StudentDetailsPage studentPage = PageFactory.initElements(webDriver, StudentDetailsPage.class);
+      
+      LOG.info("Page Source: {}{}", System.getProperty("line.separator"), webDriver.getPageSource());
+      
+      // Welcome message is not mocked so should be as per stidentID passed.
+      assertThat(studentPage.getWelcomeMessage()).as("Welcome Message").isEqualTo("Welcome " + studentId);
+      
+      // Below all is mocked so should match mockedStudent
+      assertThat(studentPage.getStudentId()).as("Student ID").isEqualTo(mockedStudent.getStudentId());
+      assertThat(studentPage.getFirstName()).as("First Name").isEqualTo(mockedStudent.getFirstName());
+      assertThat(studentPage.getLastName()).as("Last Name").isEqualTo(mockedStudent.getLastName());
+      assertThat(studentPage.getAge()).as("Age").isEqualTo(mockedStudent.getAge());
+    } finally {
+      
+      if(webDriver != null) {
+        
+        webDriver.close();
+      }
+    }
+  }
+  
+  //... Few line omitted...
+  
+  private static Student createStudent(final String studentId) {
+    
+    final Student student = new Student();
+    
+    student.setStudentId(studentId);
+    student.setFirstName(studentId + "-firstName");
+    student.setLastName(studentId + "-lastName");
+    student.setAge(12);
+    
+    return student;
+  }
+   
+  @Autowired
+  private StudentController studentController;
+  private static final Logger LOG = LoggerFactory.getLogger(StudentDetailsPageTestIT.class);
+}
+```
+* The _**@ContextConfiguration(classes = TestConfiguration.class)**_ on the test class is used to initialized the mock controllers as mentioned in [Mock the MVC controllers or other beans](#mock-the-mvc-controllers-or-other-beans)
+* At the start of the test we create the **MockMvc** instance using the MVC controller we are going to mock.
+    ```java
+    final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(this.studentController).build();
+    ```
+* We create the _**UiTestContext**_ instance and define that only the urls containing _**/api/**_ needs to be mocked.
+  ```java
+  uiTestContext.shouldMock((method, url, headers) -> url.contains("/api/"));
+  ```
+* We then create and initialize the **webDriver** instance as mentioned in [**Create WebDriver instance**](#create-webdriver-instance)
+  ```java
+  webDriver = createWebDriver(uiTestContext.getProxyPort());
+  ```
+* In our sample app. we request a student details passing in the student id in url and on page load make a REST call to fetch the student details.
+* For our test we are going to load this page and mock the REST call to return mocked data.
+* Below we use random studenId value and also a random mocked student object.
+  ```java
+  final String studentId = "MyStudent" + UUID.randomUUID().toString();
+  final Student mockedStudent = createStudent("Mocked-" + UUID.randomUUID().toString());
+  ```
+* We define the mock behavior as below. It implies that we should return the _**mockedStudent**_ instance when the controller methods is called.
+  ```java
+  when(studentController.student(studentId)).thenReturn(mockedStudent);
+  ``` 
+* Now, we load the web page using _**webDriver**_.
+  ```java
+  webDriver.get("http://localhost:8080/students/" + studentId);
+  ```
+* Once loaded we get the Page object.
+* Now, we start the validation.
+* First on the web page there is a message for the student as "Welcome &lt;studentId>".
+* We validate that this message is formed using the studentId passed in the page url.
+  ```java
+  assertThat(studentPage.getWelcomeMessage()).as("Welcome Message").isEqualTo("Welcome " + studentId);      
+  ```
+* Now, below is the validation to make sure the REST request returned the _**mockedStudent**_ instance which has different studentId than the one we used in loading the page. The values on the page are retrieved using [**StudentDetailsPage**](/samples/external-server/expressjs-tests/src/test/java/org/expedientframework/uitest/StudentDetailsPage.java).
+  ```java
+  assertThat(studentPage.getStudentId()).as("Student ID").isEqualTo(mockedStudent.getStudentId());
+  assertThat(studentPage.getFirstName()).as("First Name").isEqualTo(mockedStudent.getFirstName());
+  assertThat(studentPage.getLastName()).as("Last Name").isEqualTo(mockedStudent.getLastName());
+  assertThat(studentPage.getAge()).as("Age").isEqualTo(mockedStudent.getAge());
+  ```
+
+## Open items
 * Handle all request types e.g. form upload etc.   

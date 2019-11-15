@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.expedientframework.uitest</groupId>
   <artifactId>facile-ui-test-samples-spring-boot-web</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>spring-boot-web</name>
   <description>Demo project for Spring Boot</description>

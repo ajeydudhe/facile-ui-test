@@ -28,7 +28,7 @@ public class StudentDetailsPageTest extends AbstractPageTest {
     
     assertThat(studentController).as("StudentController").isNotNull();
 
-    final Student student = StudentController.createStudent("NotExists-" + UUID.randomUUID().toString());
+    final Student student = StudentController.createStudent("MyDummyStudent-" + UUID.randomUUID().toString());
 
     when(studentController.studentPage(student.getStudentId())).thenReturn("student.details");
     when(studentController.student(student.getStudentId())).thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, String.format("Student '%s' not found.", student.getStudentId()), null, null, null));

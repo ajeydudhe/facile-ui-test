@@ -13,6 +13,8 @@ package org.expedientframework.uitest.core;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
@@ -44,13 +46,12 @@ class MockMvcRequestHandler {
   public static MockMvcRequestHandler create(final String contextPath, 
                                              final HttpRequest request, 
                                              final HttpMessageContents contents, 
-                                             final HttpMessageInfo messageInfo) {
+                                             final HttpMessageInfo messageInfo,
+                                             final MockRequestPredicate mockRequestPredicate) {
 
     
     try {
 
-      LOG.info("Received request [({}) {}]", request.getMethod().name(), messageInfo.getOriginalUrl());
-      
       final URI uri = new URI(messageInfo.getOriginalUrl());
       
       final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.request(request.getMethod().name(), uri);
@@ -62,14 +63,30 @@ class MockMvcRequestHandler {
       //requestBuilder.locale(browserLocale);
       
       // Add headers
+      final Map<String, String> headers = new HashMap<>(request.headers().entries().size());
       for (Entry<String, String> header : request.headers())
       {
         requestBuilder.header(header.getKey(), header.getValue());
+        headers.put(header.getKey(), header.getValue());
       }
       
       requestBuilder.content(contents.getBinaryContents());
       
-      return new MockMvcRequestHandler(requestBuilder);
+      if(mockRequestPredicate == null || mockRequestPredicate.shouldMock(request.getMethod().name(), messageInfo.getOriginalUrl(), headers)) {
+      
+        LOG.info("Mocking request [({}) {}]", request.getMethod().name(), messageInfo.getOriginalUrl());
+        
+        return new MockMvcRequestHandler(requestBuilder);
+      }
+      
+      return new MockMvcRequestHandler(requestBuilder) {
+        
+        @Override
+        public HttpResponse execute(MockMvc mockMvc) {
+
+          return null;
+        }
+      };
     } catch (URISyntaxException e) {
 
       LOG.error("An error occurred.", e);
@@ -108,7 +125,7 @@ class MockMvcRequestHandler {
     HttpHeaders.setContentLength(response, buffer.readableBytes());
     
     // Add response headers
-    LOG.info("MockMvc response headers: {}", mockMvcResponse.getHeaderNames());
+    LOG.debug("MockMvc response headers: {}", mockMvcResponse.getHeaderNames());
     
     for (String headerName : mockMvcResponse.getHeaderNames()) {
       
