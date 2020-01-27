@@ -17,9 +17,9 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <org.springframework.version>5.2.0.RELEASE</org.springframework.version>
-    <mockito.version>3.1.0</mockito.version>
-    <slf4j.version>1.7.28</slf4j.version>
+    <org.springframework.version>5.2.3.RELEASE</org.springframework.version>
+    <mockito.version>3.2.4</mockito.version>
+    <slf4j.version>2.0.0-alpha1</slf4j.version>
 
     <browsermob-core.version>2.1.5</browsermob-core.version>
     <javax.servlet-api.version>4.0.1</javax.servlet-api.version>

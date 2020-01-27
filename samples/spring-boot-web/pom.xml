@@ -16,8 +16,8 @@
 
   <properties>
     <java.version>1.8</java.version>
-    <testng.version>7.0.0</testng.version>
-    <webdrivermanager.version>3.7.1</webdrivermanager.version>
+    <testng.version>7.1.0</testng.version>
+    <webdrivermanager.version>3.8.1</webdrivermanager.version>
     <assertj.version>3.11.1</assertj.version>
     <facile-mock-http-proxy.version>1.0.0-M1</facile-mock-http-proxy.version>
     
