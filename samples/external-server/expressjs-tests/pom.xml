@@ -8,7 +8,7 @@
   <artifactId>facile-ui-test-samples-expressjs-tests</artifactId>
 
   <properties>
-    <org.springframework.version>5.2.1.RELEASE</org.springframework.version>
+    <org.springframework.version>5.2.20.RELEASE</org.springframework.version>
     <assertj-core.version>3.14.0</assertj-core.version>
     <org.mockito.version>1.10.19</org.mockito.version>
     <org.testng.version>7.0.0</org.testng.version>
